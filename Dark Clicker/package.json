@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@tsparticles/pjs": "^3.8.1",
+    "vue-vanta-revamp": "^0.1.2"
+  }
+}

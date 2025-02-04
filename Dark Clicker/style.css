@@ -1,0 +1,453 @@
+@import url("https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap");
+
+body {
+  display: grid;
+  place-items: center;
+  height: 70vh;
+  margin: 0;
+  padding: 0;
+  background-color: #02181b;
+  background-image: url(assets/universe-2947500.jpg);
+  color: white;
+  user-select: none;
+  position: relative;
+  font-family: "Crimson Text", serif;
+}
+
+.blackhole-image {
+  width: 100%;
+  height: 100%;
+}
+
+.main {
+  display: flex;
+  gap: 200px;
+}
+
+.left {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 50px;
+}
+
+.right {
+  margin-top: 40px;
+}
+
+.right-navbar {
+  display: flex;
+  font-weight: bold;
+}
+
+.right-navbar > div {
+  width: 140px;
+  height: 40px;
+  background-color: #3d0225;
+  text-align: center;
+  padding-top: 15px;
+}
+
+.right-navbar > div:hover {
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.right-navbar > :first-child {
+  background: rgb(49, 1, 1);
+}
+
+.right-navbar > :nth-child(3) {
+  background: rgb(28, 1, 73);
+}
+
+#upgrades-container {
+  max-height: 400px;
+  width: 500px;
+  margin-top: 20px;
+  padding: 20px;
+  overflow-y: scroll;
+  border: 2px rgb(150, 150, 150) solid;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgb(140, 140, 140);
+  position: relative;
+}
+
+.blue-text {
+  font-size: 42px;
+  color: #187bec;
+  font-weight: 700;
+  text-shadow: 2px 2px 3px hwb(90, 90, 90);
+}
+
+.cost-text {
+  font-size: 18px;
+}
+
+.blackhole-image:hover {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.blackhole-image:active {
+  opacity: 0.8;
+  transform: scale(1.02);
+}
+
+.upgrade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  height: 60px;
+  border: 3px solid #eedddd;
+  padding: 20px 40px;
+  border-radius: 10px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.upgrade:hover {
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.upgrade.on-cooldown {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.upgrade.on-cooldown::after {
+  content: attr(data-cooldown) "s";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.type-skill {
+  display: none;
+}
+.type-artifact {
+  display: none;
+}
+
+.darkmatter-img-container {
+  position: relative;
+}
+
+.mid-section h4 {
+  margin: auto;
+  height: auto;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  font-size: 20px;
+}
+
+.cost-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.upgrade-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  margin-top: 15px;
+  margin-right: 40px;
+}
+
+.clicker-level {
+  display: block !important;
+  color: white !important;
+  font-size: 20px !important;
+}
+
+.p {
+  margin: 0px;
+}
+
+.upgrade-img {
+  position: relative 0px;
+  width: 35px;
+  height: 35px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+}
+
+.next-level-info {
+  position: absolute;
+  right: -105px;
+  background-color: rgb(65, 63, 63);
+  height: 90px;
+  width: 100px;
+  text-align: center;
+  display: none;
+  font-size: 15px;
+  border-radius: 2px;
+}
+
+.upgrade:hover .next-level-info {
+  display: block;
+}
+
+.statistics {
+  position: absolute;
+  top: 750px;
+  width: 450px;
+  padding: 35px;
+  border: 4px solid white;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.texts {
+  display: flex;
+  gap: 100px;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.util-buttons {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.util-button {
+  padding: 8px 15px;
+  font-size: 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.util-button:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.fade-up {
+  animation: fade-up 1s;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0, 9;
+    transform: translateY(-5px);
+  }
+  40% {
+    opacity: 0, 75;
+    transform: translateY(-13px);
+  }
+  60% {
+    opacity: 0, 55;
+    transform: translateY(-25px);
+  }
+  80% {
+    opacity: 0, 3;
+    transform: translateY(-42px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-65px);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-hover {
+  background: #555;
+}
+
+.orbit-container {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* permet de clicquer a travers  z-index -1 place l'orbite derrière l'élément */
+  z-index: -1;
+}
+
+.orbit-object {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  animation: orbit 3s linear infinite;
+}
+
+.orbit-object.delay {
+  animation-delay: 1.5s;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(100px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(100px) rotate(-360deg);
+  }
+}
+
+.moving-rocket1 {
+  position: absolute;
+  width: 80px; /* Taille de la fusée */
+  animation: rocket-move 3s linear infinite;
+}
+.moving-rocket2 {
+  position: absolute;
+  width: 80px; /* Taille de la fusée */
+  animation: rocket-move2 3s linear infinite;
+}
+
+@keyframes rocket-move {
+  0% {
+    left: -100px;
+  } /* Départ hors de l'écran à droite */
+  100% {
+    left: 100vw;
+  } /* Arrivée hors de l'écran à gauche */
+}
+@keyframes rocket-move2 {
+  0% {
+    left: 100vw;
+  } /* Départ hors de l'écran à droite */
+  100% {
+    left: -100px;
+  } /* Arrivée hors de l'écran à gauche */
+}
+
+#particle-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: cyan;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: particle-move 2s linear infinite;
+}
+
+@keyframes particle-move {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2) translateY(-50px);
+    opacity: 0;
+  }
+}
+
+#black-hole-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+#black-hole {
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.8); /* Couleur de la particule */
+  border-radius: 50%;
+  animation: moveToCenter 1s forwards;
+  transition: transform 1s ease-in-out;
+}
+
+@keyframes moveToCenter {
+  0% {
+    transform: translate(var(--x), var(--y)); /* Position de départ */
+  }
+  100% {
+    transform: translate(
+      -50%,
+      -50%
+    ); /* Se déplace vers le centre du trou noir */
+  }
+}
+
+.orbital-object {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  top: 50%;
+  left: 50%;
+  animation: orbit 10s linear infinite;
+}
+
+#satellite1 {
+  background-image: url(assets/noun-satellite-7534888.svg);
+  align-items: center;
+  animation-duration: 15s;
+}
+
+#satellite2 {
+  background-image: url(assets/noun-satellite-7534888.svg);
+  animation-duration: 20s;
+}
+
+#asteroid1 {
+  background: yellow;
+  animation-duration: 25s;
+}
+
+#asteroid2 {
+  background: green;
+  animation-duration: 30s;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}
