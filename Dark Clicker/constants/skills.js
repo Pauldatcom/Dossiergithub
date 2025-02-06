@@ -9,7 +9,7 @@ function initSkills() {
     if (skillElement) {
       skillElement.addEventListener("click", () => {
         switch (skill.name) {
-          case "Singularity boost":
+          case "Singularity Boost":
             activateSingularityBoost();
             break;
           case "Solar Flare":
@@ -22,8 +22,8 @@ function initSkills() {
 }
 
 // Skill 1 : Singularity Boost
-function activateSingularityBoost() {
-  const skill = defaultSkillValues.find((s) => s.name === "Singularity boost");
+function activateSingularityBoost(parseddarkmatter, darkmatter, dpc) {
+  const skill = defaultSkillValues.find((s) => s.name === "Singularity Boost");
 
   // Vérifier si assez de dark matter
   if (parseddarkmatter >= skill.cost) {
@@ -36,24 +36,23 @@ function activateSingularityBoost() {
     dpc *= 2;
 
     // Son ou effet visuel
-    const skillSound = new Audio("assets/audio/power-up-sound-effect.mp3");
+    const skillSound = new Audio(
+      "assets/audio/deep-cinematic-ballad_37sec-178305.mp3"
+    );
     skillSound.volume = 0.1;
     skillSound.play();
 
     // Désactiver le boost après 30 secondes
     setTimeout(() => {
       dpc = originalDpc;
-      console.log("Singularity boost terminé");
+      console.log("Singularity Boost terminé");
     }, 30000);
-
-    // Gestion du cooldown (à implémenter plus tard si nécessaire)
-  } else {
-    alert("Pas assez de dark matter pour activer ce skill !");
   }
+  return parseddarkmatter;
 }
 
 // Skill 2 : Solar Flare
-function activateSolarFlare() {
+function activateSolarFlare(parseddarkmatter, darkmatter, dps) {
   const skill = defaultSkillValues.find((s) => s.name === "Solar Flare");
 
   // Vérifier si assez de dark matter
@@ -61,21 +60,31 @@ function activateSolarFlare() {
     // Réduire le dark matter
     parseddarkmatter -= skill.cost;
     darkmatter.innerHTML = Math.round(parseddarkmatter);
+    
 
     // Gain de dark matter (600 x dps)
     const darkMatterGain = 600 * dps;
     parseddarkmatter += darkMatterGain;
     darkmatter.innerHTML = Math.round(parseddarkmatter);
 
+    
+
     // Son ou effet visuel
-    const skillSound = new Audio("assets/audio/solar-flare-effect.mp3");
+    const skillSound = new Audio(
+      "assets/audio/galactic-space-journey-279437.mp3"
+    );
     skillSound.volume = 0.1;
     skillSound.play();
+    
+    
 
     // Gestion du cooldown (à implémenter plus tard si nécessaire)
   } else {
     alert("Pas assez de dark matter pour activer ce skill !");
   }
+
+  
+  return parseddarkmatter;
 }
 
 // Initialiser les skills au chargement
