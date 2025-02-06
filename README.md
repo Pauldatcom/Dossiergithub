@@ -28,7 +28,7 @@ et des skills
 Dans ce projet, j'ai utilisé [Particles.js](https://vincentgarreau.com/particles.js/) pour ajouter des effets de particules dynamiques en fond, créant une ambiance spatiale et immersive autour du trou noir.
 
 ## Lancer le jeu 
-Prérequis =  Assure-toi que VS Code est installé sur ta machine sinon lz lien pour VSCode ici : https://code.visualstudio.com/.
+Prérequis =  Assure-toi que VS Code est installé sur ta machine sinon le lien pour VSCode ici : https://code.visualstudio.com/. 
 Etapes = Ouvre VS Code et clic sur "clone git repository" et copie le lien https://github.com/Pauldatcom/Dossiergithub.git 
 puis ouvre le dossier dans VS Code,  lorsque le dossier s'ouvre, clic droit sur index.html et sélectionne "Ouvrir avec le navigateur" ou "Open with" et choisis ton navigateur préféré.
 Le jeu devrait maintenant être lancé dans ton navigateur, et tu peux commencer à jouer directement !
