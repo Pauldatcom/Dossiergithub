@@ -8,7 +8,7 @@ export const defaultUpgradeValues = [
 
 export const defaultSkillValues = [
     {
-     name: "Singularity boost",
+     name: "Singularity Boost",
      description: "Double your clicking power for 30 seconds",
      image: "assets/skills/black-hole.png",
      cd: 600,

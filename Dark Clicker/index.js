@@ -19,10 +19,10 @@ blackhole.addEventListener("mouseleave", () => {
   blackhole.style.filter = "blur(0px)";
 });
 
-let darkmatter = document.querySelector(".darkmatter-cost"); //
+let darkmatter = document.querySelector(".darkmatter-cost"); 
 let parseddarkmatter = parseFloat(darkmatter.innerHTML);
 
-let dpcText = document.getElementById("dpc-text"); // va cherche un élément par son ID
+let dpcText = document.getElementById("dpc-text"); // Will fetch an element by its ID
 let dpsText = document.getElementById("dps-text");
 
 let darkmatterImgContainer = document.querySelector(
@@ -39,6 +39,7 @@ let dps = 0; // darkmatterpersecond
 
 const bgm = new Audio("assets/audio/bgm.mp3"); // bgm = backgroundmusic
 bgm.volume = 0.1;
+
 
 function incrementdarkmatter(event) {
   // fonction pour effet +1 le fade
@@ -68,15 +69,24 @@ const timeout = (div) => {
 };
 
 function buyUpgrade(upgrade) {
-  // function qui généralise la création d'Upgrade. Réduit le nmbre de ligne
-  const matchedUpgrade = upgrades.find(
+  let matchedUpgrade = upgrades.find(
     (currentUpgrade) => currentUpgrade.name === upgrade
   );
 
   if (!matchedUpgrade) {
-    console.error("Upgrade non trouvée :", upgrade); // Pour trouver l'erreur si pb a la création d'une nouvelle Upgrade
+    if (upgrade === "Singularity Boost") {
+      parseddarkmatter = activateSingularityBoost(parseddarkmatter, darkmatter, dpc);
+    } else if (upgrade === "Solar Flare") {
+      parseddarkmatter = activateSolarFlare(parseddarkmatter, darkmatter, dpc);
+    }
     return;
   }
+
+  if (!matchedUpgrade) {
+    console.error("Upgrade non trouvée :", upgrade); // To find the error if there's a problem when creating a new Upgrade
+    return;
+  }
+
 
   const upgradeDiv = document.getElementById(`${matchedUpgrade.name}-upgrade`);
   const nextLevelDiv = document.getElementById(
@@ -88,6 +98,7 @@ function buyUpgrade(upgrade) {
     matchedUpgrade.parsedCost = Math.round(
       matchedUpgrade.parsedCost * matchedUpgrade.costMultiplier
     );
+   
 
     // Mise à jour du texte du coût DANS L'INTERFACE
     document.querySelector(`.${matchedUpgrade.name}-cost`).innerHTML =
@@ -125,17 +136,19 @@ function buyUpgrade(upgrade) {
         nextLevelP.innerHTML = `+${matchedUpgrade.parsedIncrease} darkmatter per second`;
       }
     }
+    
 
     document.querySelector(`.${matchedUpgrade.name}-level`).innerHTML =
       parseInt(
         document.querySelector(`.${matchedUpgrade.name}-level`).innerHTML
       ) + 1;
+    
 
     matchedUpgrade.level.innerHTML++;
 
     index = powerUpIntervals.indexOf(
       parseFloat(matchedUpgrade.level.innerHTML)
-    ); // parsefloat car dans le string donc va  cherche dans upgrades.js pour verifier
+    ); // parseFloat because it's in a string, so it will check in upgrades.js to verify
 
     if (index !== -1) {
       upgradeDiv.style.cssText = `border-color: red`;
@@ -155,7 +168,7 @@ function buyUpgrade(upgrade) {
         (
           matchedUpgrade.parsedIncrease * matchedUpgrade.darkmatterMultiplier
         ).toFixed(2)
-      ); // tofixed pour avoir 2 chiffre après la virgule
+      ); // toFixed to have 2 decimal places
 
       if (matchedUpgrade.name === "clicker")
         nextLevelP.innerHTML = `+${matchedUpgrade.parsedIncrease} darkmatter per click`;
@@ -176,7 +189,7 @@ function save() {
   //  fonctionne avec le local storage de la page qui est dans la partie application lorsque j'inspecte la page
   localStorage.clear();
 
-  upgrades.map((upgrade) => {
+  upgrades.forEach((upgrade) => {
     const object = JSON.stringify({
       // permet de convertir un objet JavaScript en une chaîne de texte au format JSON. Pour stocker dans le local storage
       parsedLevel: parseFloat(upgrade.level.innerHTML),
@@ -195,32 +208,46 @@ function save() {
 }
 
 function load() {
-  upgrades.map((upgrade) => {
+  upgrades.forEach((upgrade) => {
     const savedValues = JSON.parse(localStorage.getItem(upgrade.name));
+    if (savedValues) {
+      upgrade.parsedCost = savedValues.parsedCost;
+      upgrade.parsedIncrease = savedValues.parsedIncrease;
+      // Update DOM elements based on upgrade.name
+      const levelElement = document.querySelector(`.${upgrade.name}-level`);
+      const costElement = document.querySelector(`.${upgrade.name}-cost`);
+      const nextPElement = document.querySelector(`.${upgrade.name}-next-p`);
 
-    // console.log(upgrade.name, savedValues)
-    upgrade.parsedCost = savedValues.parsedCost;
-    upgrade.parsedIncrease = savedValues.parsedIncrease;
-
-    upgrade.level.innerHTML = savedValues.parsedLevel;
-    upgrade.cost.innerHTML = Math.round(upgrade.parsedCost);
-    upgrade.increase.innerHTML = upgrade.parsedIncrease;
+      if (levelElement) {
+        levelElement.innerHTML = savedValues.parsedLevel;
+      }
+      if (costElement) {
+        costElement.innerHTML = Math.round(upgrade.parsedCost);
+      }
+      if(nextPElement)
+        nextPElement.innerHTML = upgrade.parsedIncrease;
+      upgrade.level.innerHTML = savedValues.parsedLevel;
+      upgrade.cost.innerHTML = Math.round(upgrade.parsedCost);
+      upgrade.increase.innerHTML = upgrade.parsedIncrease;
+    }
   });
 
   dpc = JSON.parse(localStorage.getItem("dpc"));
   dps = JSON.parse(localStorage.getItem("dps"));
   parseddarkmatter = JSON.parse(localStorage.getItem("darkmatter"));
-
-  darkmatter.innerHTML = Math.round(parseddarkmatter);
-  console.log(load);
+    if(parseddarkmatter){ // check if parseddarkmatter exist
+      darkmatter.innerHTML = Math.round(parseddarkmatter);
+    }
 }
+// window.addEventListener("load", load); // Add a load event listener to load data
+
 
 setInterval(() => {
+
   parseddarkmatter += dps / 10;
   darkmatter.innerHTML = Math.round(parseddarkmatter);
   dpcText.innerHTML = Math.round(dpc);
   dpsText.innerHTML = Math.round(dps);
-  //bgm.play()
 }, 100);
 
 skillsNavButton.addEventListener("click", function () {
@@ -273,7 +300,6 @@ function createParticle() {
 setInterval(createParticle(), 200);
 
 function createOrbitingObjects(numObjects = 10) {
-  // Augmente à 10 objets
   let orbitContainer = document.createElement("div");
   orbitContainer.classList.add("orbit-container");
 
@@ -315,28 +341,50 @@ function createOrbitingObjects(numObjects = 10) {
 createOrbitingObjects(12);
 
 function launchRocket() {
-  let rocket = document.createElement("img");
-  rocket.src = "assets/rocket1.png";
-  let randomClass = "moving-rocket" + Math.round(Math.random() + 1);
-  rocket.classList.add(randomClass);
+  let rocketContainer = document.createElement("div"); // Création d'un conteneur
+  rocketContainer.classList.add("rocket-container");
+
+  let rocket = document.createElement("img"); // Image principale (la fusée)
+  let flame = document.createElement("img"); // Deuxième image (flamme sous la fusée)
+
   rocket.classList.add("rocket");
+  flame.classList.add("rocket-flame");
 
-  let yPos = Math.random() * 50 + 20; // Hauteur aléatoire entre 20% et 70%
-  rocket.style.top = `${yPos}%`;
+  // Définir les images pour chaque type de fusée
+  let isRocket1 =
+    document.querySelectorAll(".moving-rocket1").length <=
+    document.querySelectorAll(".moving-rocket2").length;
 
-  document.body.appendChild(rocket);
+  if (isRocket1) {
+    rocket.src = "assets/rocket1.png"; // Image de la fusée 1
 
+    rocketContainer.classList.add("moving-rocket1");
+  } else {
+    rocket.src = "assets/rocket2.png"; // Image de la fusée 2
+
+    rocketContainer.classList.add("moving-rocket2");
+  }
+
+  // Ajouter les images au conteneur
+  rocketContainer.appendChild(rocket);
+
+  // Position Y aléatoire entre 20% et 70%
+  let yPos = Math.random() * 50 + 20;
+  rocketContainer.style.top = `${yPos}%`;
+
+  document.body.appendChild(rocketContainer);
+
+  // Supprimer la fusée après 5s
   setTimeout(() => {
-    rocket.remove();
-  }, 5000); // Supprime la fusée après 5s
+    rocketContainer.remove();
+  }, 5000);
 }
 
-// Lance une fusée toutes les 7 secondes
+// Launches a rocket every 7 seconds
 setInterval(() => {
   const allShips = document.querySelectorAll(".rocket");
   const rocketLevel = document.querySelector(".rocket-level");
-  console.log(allShips.length);
-  console.log(rocketLevel.innerHTML);
+
   if (allShips.length < Number(rocketLevel.innerHTML)) {
     launchRocket();
   }
@@ -369,34 +417,10 @@ function createAspiratingParticles(event) {
     particle.remove();
   }, 1000);
 }
+// bgm.play();
 
-// Ajout de l'écouteur d'événements pour le clic sur le trou noir
+// Adding the event listener for the click on the black hole
 blackhole.addEventListener("click", createAspiratingParticles);
-
-let satelliteUpgradeLevel = 0;
-
-function activateSatelliteUpgrade() {
-  satelliteUpgradeLevel += 1;
-
-  // Ajouter des satellites et augmenter la vitesse de rotation tous les 10 niveaux
-  if (satelliteUpgradeLevel % 10 === 0) {
-    increaseOrbitSpeed();
-  }
-}
-
-function increaseOrbitSpeed() {
-  const orbitalObjects = document.querySelectorAll(".orbital-object");
-  orbitalObjects.forEach((object, index) => {
-    const currentDuration = parseFloat(
-      getComputedStyle(object).animationDuration
-    );
-    const newDuration = currentDuration * 0.9; // Augmente la vitesse de 10%
-    object.style.animationDuration = `${newDuration}s`;
-  });
-}
-
-// Simuler un clic sur l'upgrade satellite
-setInterval(activateSatelliteUpgrade, 10000); // À chaque 10 secondes, un upgrade est effectué pour simuler le jeu
 
 window.incrementdarkmatter = incrementdarkmatter;
 window.buyUpgrade = buyUpgrade;
