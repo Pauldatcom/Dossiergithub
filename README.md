@@ -23,9 +23,9 @@ et des skills
 - **localStorage** : Sauvegarde des données du jeu.
 
 
-## Intégration de Particles.js
+## Intégration de Particles.js et de Vite 
 
-Dans ce projet, j'ai utilisé [Particles.js](https://vincentgarreau.com/particles.js/) pour ajouter des effets de particules dynamiques en fond, créant une ambiance spatiale et immersive autour du trou noir.
+Dans ce projet, j'ai utilisé [Particles.js](https://vincentgarreau.com/particles.js/) pour ajouter des effets de particules dynamiques en fond, créant une ambiance spatiale et immersive autour du trou noir. Vite permet d'ajoutes un petit serveur web qui permet au jeu de bien se charge dans un navigateur lien vers l'extension (https://vite.dev/guide/) 
 
 ## Lancer le jeu 
 Prérequis =  Assure-toi que VS Code est installé sur ta machine sinon le lien pour VSCode ici : https://code.visualstudio.com/. 
