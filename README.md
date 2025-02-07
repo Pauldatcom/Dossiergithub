@@ -29,8 +29,6 @@ Dans ce projet, j'ai utilisé [Particles.js](https://vincentgarreau.com/particle
 
 ## Lancer le jeu 
 Prérequis =  Assure-toi que VS Code est installé sur ta machine sinon le lien pour VSCode ici : https://code.visualstudio.com/. 
-Etapes = Ouvre VS Code et clic sur "clone git repository" et copie le lien https://github.com/Pauldatcom/Dossiergithub.git 
-puis ouvre le dossier dans VS Code,  lorsque le dossier s'ouvre, clic droit sur index.html et sélectionne "Ouvrir avec le navigateur" ou "Open with" et choisis ton navigateur préféré.
-Le jeu devrait maintenant être lancé dans ton navigateur, et tu peux commencer à jouer directement !
+Etapes = Ouvre VS Code et accède au dossier puis Ouvre le terminal intégré: Tape la commande npm install pour installer la dépendances de Vite, pour lancer le serveur tape la commande npm run dev et il y'aura une adresse local pour testé le jeu. 
 
 
