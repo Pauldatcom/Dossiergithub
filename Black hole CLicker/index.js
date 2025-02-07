@@ -54,7 +54,7 @@ function incrementdarkmatter(event) {
 
   const div = document.createElement("div");
   div.innerHTML = `+${Math.round(dpc)}`;
-  div.style.cssText = `color: white; position: absolute; left: ${x}px; top: ${y}px; font-size: 15px; pointer-events: none;`; // pour le style, directement implementer dans le css
+  div.style.cssText = `color: white; position: absolute; left: ${x}px; top: ${y}px; font-size: 15px; pointer-events: none;`; // for the style, directly implement in the css
   darkmatterImgContainer.appendChild(div);
 
   div.classList.add("fade-up");
@@ -100,11 +100,11 @@ function buyUpgrade(upgrade) {
     );
    
 
-    // Mise à jour du texte du coût DANS L'INTERFACE
+    // Update cost text IN THE INTERFACE
     document.querySelector(`.${matchedUpgrade.name}-cost`).innerHTML =
       matchedUpgrade.parsedCost;
 
-    // Mise à jour dans l'objet upgrade
+    // Update in the upgrade object
     matchedUpgrade.cost.innerHTML = matchedUpgrade.parsedCost;
     const upgradeSound = new Audio(
       "assets/audio/creepy-space-signal-213834.mp3"
@@ -186,22 +186,18 @@ function buyUpgrade(upgrade) {
 }
 
 function save() {
-  //  fonctionne avec le local storage de la page qui est dans la partie application lorsque j'inspecte la page
+  //  works with the local storage of the page which is in the application part when I inspect the page
   localStorage.clear();
 
   upgrades.forEach((upgrade) => {
     const object = JSON.stringify({
-      // permet de convertir un objet JavaScript en une chaîne de texte au format JSON. Pour stocker dans le local storage
+      // converts a JavaScript object into a text string in JSON format. To store in local storage
       parsedLevel: parseFloat(upgrade.level.innerHTML),
       parsedCost: upgrade.parsedCost,
       parsedIncrease: upgrade.parsedIncrease,
     });
-
-    // console.log(object)
-
     localStorage.setItem(upgrade.name, object);
   });
-
   localStorage.setItem("dpc", JSON.stringify(dpc));
   localStorage.setItem("dps", JSON.stringify(dps));
   localStorage.setItem("darkmatter", JSON.stringify(parseddarkmatter));
@@ -239,7 +235,7 @@ function load() {
       darkmatter.innerHTML = Math.round(parseddarkmatter);
     }
 }
-// window.addEventListener("load", load); // Add a load event listener to load data
+
 
 
 setInterval(() => {
@@ -311,15 +307,15 @@ function createOrbitingObjects(numObjects = 10) {
     let orbitObject = document.createElement("div");
     orbitObject.classList.add("orbit-object");
 
-    let size = Math.random() * 12 + 3; // Taille entre 3px et 15px
-    let speed = Math.random() * 5 + 3; // Vitesse entre 3s et 8s
-    let distance = Math.random() * 100 + 50; // Distance entre 50px et 150px
-    let startAngle = Math.random() * 360; // Position de départ aléatoire
+    let size = Math.random() * 12 + 3; // Size between 3px and 15px
+    let speed = Math.random() * 5 + 3; // Speed between 3s and 8s
+    let distance = Math.random() * 100 + 50; // Distance between 50px and 150px
+    let startAngle = Math.random() * 360; // Random starting position
 
     orbitObject.style.width = `${size}px`;
     orbitObject.style.height = `${size}px`;
     orbitObject.style.animation = `orbit-${i} ${speed}s linear infinite`;
-    orbitObject.style.animationDelay = `${Math.random() * 2}s`; // Délai de départ aléatoire
+    orbitObject.style.animationDelay = `${Math.random() * 2}s`; // Random start delay
 
     let orbitKeyframes = `
             @keyframes orbit-${i} {
@@ -341,44 +337,45 @@ function createOrbitingObjects(numObjects = 10) {
 createOrbitingObjects(12);
 
 function launchRocket() {
-  let rocketContainer = document.createElement("div"); // Création d'un conteneur
+  let rocketContainer = document.createElement("div"); // Creating a container
   rocketContainer.classList.add("rocket-container");
 
-  let rocket = document.createElement("img"); // Image principale (la fusée)
-  let flame = document.createElement("img"); // Deuxième image (flamme sous la fusée)
+  let rocket = document.createElement("img"); // Main image (the rocket)
+  let flame = document.createElement("img"); // Second image (flame under the rocket)
 
   rocket.classList.add("rocket");
   flame.classList.add("rocket-flame");
 
-  // Définir les images pour chaque type de fusée
+  
   let isRocket1 =
     document.querySelectorAll(".moving-rocket1").length <=
     document.querySelectorAll(".moving-rocket2").length;
 
   if (isRocket1) {
-    rocket.src = "assets/rocket1.png"; // Image de la fusée 1
+    rocket.src = "assets/rocket1.png"; 
 
     rocketContainer.classList.add("moving-rocket1");
   } else {
-    rocket.src = "assets/rocket2.png"; // Image de la fusée 2
+    rocket.src = "assets/rocket2.png"; 
 
     rocketContainer.classList.add("moving-rocket2");
   }
 
-  // Ajouter les images au conteneur
+ 
   rocketContainer.appendChild(rocket);
 
-  // Position Y aléatoire entre 20% et 70%
+  // Random Y position between 20% and 70%
   let yPos = Math.random() * 50 + 20;
   rocketContainer.style.top = `${yPos}%`;
 
   document.body.appendChild(rocketContainer);
 
-  // Supprimer la fusée après 5s
+ 
   setTimeout(() => {
     rocketContainer.remove();
   }, 5000);
 }
+
 
 // Launches a rocket every 7 seconds
 setInterval(() => {
@@ -394,30 +391,32 @@ function createAspiratingParticles(event) {
   const particle = document.createElement("div");
   particle.classList.add("particle");
 
-  // Position de la particule au moment du clic
+  // Position of the particle at the time of the click
   const x = event.offsetX;
   const y = event.offsetY;
 
-  // Définir les propriétés CSS personnalisées pour la position initiale
+  
+ // Set custom CSS properties for initial position
   particle.style.setProperty("--x", `${x}px`);
   particle.style.setProperty("--y", `${y}px`);
 
-  // Positionner la particule
+  
   particle.style.left = `${x}px`;
   particle.style.top = `${y}px`;
 
-  // Ajouter la particule à l'écran
+  
   document.body.appendChild(particle);
 
-  // Créer l'animation de particule aspirée vers le trou noir
+  
+// Create the particle animation sucked towards the black hole
   particle.style.animation = "moveToCenter 1s forwards";
 
-  // Supprimer la particule après l'animation
+  
   setTimeout(() => {
     particle.remove();
   }, 1000);
 }
-// bgm.play();
+   // bgm.play();
 
 // Adding the event listener for the click on the black hole
 blackhole.addEventListener("click", createAspiratingParticles);

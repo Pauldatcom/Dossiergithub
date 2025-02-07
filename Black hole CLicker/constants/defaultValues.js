@@ -29,7 +29,8 @@ export const defaultArtifactValues = [
     {
      name: "Artifact 1",
      description: "Permanently increase all darkmatter gained by x amount",
-     image:"",
+     image:"assets/planet2.jpg",
+     cost: 18000,
      type:"artifact",
     },
 ];

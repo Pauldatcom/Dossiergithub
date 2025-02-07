@@ -5,8 +5,8 @@ import { defaultArtifactValues } from "./defaultValues.js";
     const template = document.getElementById("upgrade-template").textContent
 
     defaultArtifactValues.forEach((obj) => {
-        // console.log (object) 
-        let html = template; // va contenir toute les info pour chaque upgrade avec des valeurs dynamiques
+         
+        let html = template; 
         
 
         Object.keys(obj).forEach((key) => {

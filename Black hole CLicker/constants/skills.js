@@ -1,6 +1,6 @@
 import { defaultSkillValues } from "./defaultValues.js";
 
-// Fonction pour initialiser les skills
+// Function to initialize skills
 function initSkills() {
   defaultSkillValues.forEach((skill) => {
     const skillElement = document.querySelector(
@@ -25,24 +25,24 @@ function initSkills() {
 function activateSingularityBoost(parseddarkmatter, darkmatter, dpc) {
   const skill = defaultSkillValues.find((s) => s.name === "Singularity Boost");
 
-  // Vérifier si assez de dark matter
+  // Check if enough dark matter
   if (parseddarkmatter >= skill.cost) {
     // Réduire le dark matter
     parseddarkmatter -= skill.cost;
     darkmatter.innerHTML = Math.round(parseddarkmatter);
 
-    // Double le clicking power
+    // Double the clicking power
     const originalDpc = dpc;
     dpc *= 2;
 
-    // Son ou effet visuel
+    // Sound or visual effect
     const skillSound = new Audio(
       "assets/audio/deep-cinematic-ballad_37sec-178305.mp3"
     );
     skillSound.volume = 0.1;
     skillSound.play();
 
-    // Désactiver le boost après 30 secondes
+    // Disable boost after 30 seconds
     setTimeout(() => {
       dpc = originalDpc;
       console.log("Singularity Boost terminé");
@@ -55,7 +55,7 @@ function activateSingularityBoost(parseddarkmatter, darkmatter, dpc) {
 function activateSolarFlare(parseddarkmatter, darkmatter, dps) {
   const skill = defaultSkillValues.find((s) => s.name === "Solar Flare");
 
-  // Vérifier si assez de dark matter
+// Check if enough dark matter
   if (parseddarkmatter >= skill.cost) {
     // Réduire le dark matter
     parseddarkmatter -= skill.cost;
@@ -69,7 +69,7 @@ function activateSolarFlare(parseddarkmatter, darkmatter, dps) {
 
     
 
-    // Son ou effet visuel
+  
     const skillSound = new Audio(
       "assets/audio/galactic-space-journey-279437.mp3"
     );
@@ -78,7 +78,7 @@ function activateSolarFlare(parseddarkmatter, darkmatter, dps) {
     
     
 
-    // Gestion du cooldown (à implémenter plus tard si nécessaire)
+    // Cooldown management (to be implemented later if necessary)
   } else {
     alert("Pas assez de dark matter pour activer ce skill !");
   }
@@ -87,10 +87,11 @@ function activateSolarFlare(parseddarkmatter, darkmatter, dps) {
   return parseddarkmatter;
 }
 
-// Initialiser les skills au chargement
+
+// Initialize skills on loading
 window.addEventListener("DOMContentLoaded", initSkills);
 
-// Exporter les fonctions si nécessaire
+// Export functions if necessary
 export { activateSingularityBoost, activateSolarFlare };
 
 function createUpgrades() {
@@ -98,8 +99,8 @@ function createUpgrades() {
   const template = document.getElementById("upgrade-template").textContent;
 
   defaultSkillValues.forEach((obj) => {
-    // console.log (object)
-    let html = template; // va contenir toute les info pour chaque upgrade avec des valeurs dynamiques
+    
+    let html = template; 
 
     Object.keys(obj).forEach((key) => {
       const regex = new RegExp(`{{${key}}}`, "g");
