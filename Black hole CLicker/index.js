@@ -19,7 +19,7 @@ blackhole.addEventListener("mouseleave", () => {
   blackhole.style.filter = "blur(0px)";
 });
 
-let darkmatter = document.querySelector(".darkmatter-cost"); 
+let darkmatter = document.querySelector(".darkmatter-cost");
 let parseddarkmatter = parseFloat(darkmatter.innerHTML);
 
 let dpcText = document.getElementById("dpc-text"); // Will fetch an element by its ID
@@ -39,7 +39,6 @@ let dps = 0; // darkmatterpersecond
 
 const bgm = new Audio("assets/audio/bgm.mp3"); // bgm = backgroundmusic
 bgm.volume = 0.1;
-
 
 function incrementdarkmatter(event) {
   // fonction pour effet +1 le fade
@@ -75,7 +74,11 @@ function buyUpgrade(upgrade) {
 
   if (!matchedUpgrade) {
     if (upgrade === "Singularity Boost") {
-      parseddarkmatter = activateSingularityBoost(parseddarkmatter, darkmatter, dpc);
+      parseddarkmatter = activateSingularityBoost(
+        parseddarkmatter,
+        darkmatter,
+        dpc
+      );
     } else if (upgrade === "Solar Flare") {
       parseddarkmatter = activateSolarFlare(parseddarkmatter, darkmatter, dpc);
     }
@@ -87,7 +90,6 @@ function buyUpgrade(upgrade) {
     return;
   }
 
-
   const upgradeDiv = document.getElementById(`${matchedUpgrade.name}-upgrade`);
   const nextLevelDiv = document.getElementById(
     `${matchedUpgrade.name}-next-level`
@@ -98,7 +100,6 @@ function buyUpgrade(upgrade) {
     matchedUpgrade.parsedCost = Math.round(
       matchedUpgrade.parsedCost * matchedUpgrade.costMultiplier
     );
-   
 
     // Update cost text IN THE INTERFACE
     document.querySelector(`.${matchedUpgrade.name}-cost`).innerHTML =
@@ -136,13 +137,11 @@ function buyUpgrade(upgrade) {
         nextLevelP.innerHTML = `+${matchedUpgrade.parsedIncrease} darkmatter per second`;
       }
     }
-    
 
     document.querySelector(`.${matchedUpgrade.name}-level`).innerHTML =
       parseInt(
         document.querySelector(`.${matchedUpgrade.name}-level`).innerHTML
       ) + 1;
-    
 
     matchedUpgrade.level.innerHTML++;
 
@@ -220,8 +219,7 @@ function load() {
       if (costElement) {
         costElement.innerHTML = Math.round(upgrade.parsedCost);
       }
-      if(nextPElement)
-        nextPElement.innerHTML = upgrade.parsedIncrease;
+      if (nextPElement) nextPElement.innerHTML = upgrade.parsedIncrease;
       upgrade.level.innerHTML = savedValues.parsedLevel;
       upgrade.cost.innerHTML = Math.round(upgrade.parsedCost);
       upgrade.increase.innerHTML = upgrade.parsedIncrease;
@@ -231,15 +229,13 @@ function load() {
   dpc = JSON.parse(localStorage.getItem("dpc"));
   dps = JSON.parse(localStorage.getItem("dps"));
   parseddarkmatter = JSON.parse(localStorage.getItem("darkmatter"));
-    if(parseddarkmatter){ // check if parseddarkmatter exist
-      darkmatter.innerHTML = Math.round(parseddarkmatter);
-    }
+  if (parseddarkmatter) {
+    // check if parseddarkmatter exist
+    darkmatter.innerHTML = Math.round(parseddarkmatter);
+  }
 }
 
-
-
 setInterval(() => {
-
   parseddarkmatter += dps / 10;
   darkmatter.innerHTML = Math.round(parseddarkmatter);
   dpcText.innerHTML = Math.round(dpc);
@@ -346,22 +342,20 @@ function launchRocket() {
   rocket.classList.add("rocket");
   flame.classList.add("rocket-flame");
 
-  
   let isRocket1 =
     document.querySelectorAll(".moving-rocket1").length <=
     document.querySelectorAll(".moving-rocket2").length;
 
   if (isRocket1) {
-    rocket.src = "assets/rocket1.png"; 
+    rocket.src = "assets/rocket1.png";
 
     rocketContainer.classList.add("moving-rocket1");
   } else {
-    rocket.src = "assets/rocket2.png"; 
+    rocket.src = "assets/rocket2.png";
 
     rocketContainer.classList.add("moving-rocket2");
   }
 
- 
   rocketContainer.appendChild(rocket);
 
   // Random Y position between 20% and 70%
@@ -370,12 +364,10 @@ function launchRocket() {
 
   document.body.appendChild(rocketContainer);
 
- 
   setTimeout(() => {
     rocketContainer.remove();
   }, 5000);
 }
-
 
 // Launches a rocket every 7 seconds
 setInterval(() => {
@@ -387,6 +379,52 @@ setInterval(() => {
   }
 }, 1000);
 
+function launchPlanet() {
+  let planetContainer = document.createElement("div"); // Creating a container
+  planetContainer.classList.add("planet-container");
+
+  let planet = document.createElement("img"); // Main image (the planet)
+  let globe = document.createElement("img"); // Second image (globe under the planet)
+
+  planet.classList.add("planet");
+  globe.classList.add("planet-globe");
+
+  let isplanet1 =
+    document.querySelectorAll(".moving-planet1").length <=
+    document.querySelectorAll(".moving-planet2").length;
+
+  if (isplanet1) {
+    planet.src = "assets/planet22.webp";
+
+    planetContainer.classList.add("moving-planet1");
+  } else {
+    planet.src = "assets/planet44.webp";
+
+    planetContainer.classList.add("moving-planet2");
+  }
+
+  planetContainer.appendChild(planet);
+
+  //   Random Y position between 20% and 70%
+  let yPos = Math.random() * 50 + 20;
+  planetContainer.style.top = `${yPos}%`;
+
+  document.body.appendChild(planetContainer);
+  setTimeout(() => {
+    planetContainer.remove();
+  }, 5000);
+}
+
+// Launches a rocket every 7 seconds
+setInterval(() => {
+  const allShips = document.querySelectorAll(".planet");
+  const PlanetLevel = document.querySelector(".planet-level");
+
+  if (allShips.length < Number(PlanetLevel.innerHTML)) {
+    launchPlanet();
+  }
+}, 1000);
+
 function createAspiratingParticles(event) {
   const particle = document.createElement("div");
   particle.classList.add("particle");
@@ -395,28 +433,22 @@ function createAspiratingParticles(event) {
   const x = event.offsetX;
   const y = event.offsetY;
 
-  
- // Set custom CSS properties for initial position
+  // Set custom CSS properties for initial position
   particle.style.setProperty("--x", `${x}px`);
   particle.style.setProperty("--y", `${y}px`);
 
-  
   particle.style.left = `${x}px`;
   particle.style.top = `${y}px`;
 
-  
   document.body.appendChild(particle);
 
-  
-// Create the particle animation sucked towards the black hole
+  // Create the particle animation sucked towards the black hole
   particle.style.animation = "moveToCenter 1s forwards";
 
-  
   setTimeout(() => {
     particle.remove();
   }, 1000);
 }
-   // bgm.play();
 
 // Adding the event listener for the click on the black hole
 blackhole.addEventListener("click", createAspiratingParticles);
