@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap");
 
-
 #particles-js {
   position: absolute;
   top: 0;
@@ -9,7 +8,6 @@
   height: 100%;
   z-index: -1;
 }
-
 
 body {
   display: grid;
@@ -23,8 +21,6 @@ body {
   position: relative;
   font-family: "Crimson Text", serif;
 }
-
-
 
 .blackhole-image {
   width: 100%;
@@ -297,7 +293,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  pointer-events: none;  /* allows clicking through z-index -1 places the orbit behind the element */
+  pointer-events: none; /* allows clicking through z-index -1 places the orbit behind the element */
   z-index: -1;
 }
 
@@ -340,13 +336,13 @@ body {
 .moving-rocket1 {
   position: absolute;
   width: 40px; /* Rocket size */
-  animation: rocket-move 3s linear infinite;
+  animation: rocket-move 6s linear infinite;
 }
 
 .moving-rocket2 {
   position: absolute;
   width: 40px; /* Rocket size */
-  animation: rocket-move2 3s linear infinite;
+  animation: rocket-move2 6s linear infinite;
 }
 
 @keyframes rocket-move {
@@ -360,10 +356,10 @@ body {
 @keyframes rocket-move2 {
   0% {
     left: 100vw;
-  } 
+  }
   100% {
     left: -100px;
-  } 
+  }
 }
 
 #particle-container {
@@ -431,7 +427,7 @@ body {
     transform: translate(
       -50%,
       -50%
-    ); /* Moves towards the center of the black hole */ 
+    ); /* Moves towards the center of the black hole */
   }
 }
 
@@ -499,5 +495,45 @@ body {
   }
   100% {
     transform: rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}
+
+.planet-container {
+  position: absolute;
+  width: 80px;
+  height: auto;
+}
+
+.planet {
+  width: 80px;
+  display: block;
+}
+
+.moving-planet1 {
+  position: absolute;
+  width: 40px; /* Rocket size */
+  animation: rocket-move 5s linear infinite;
+}
+
+.moving-planet2 {
+  position: absolute;
+  width: 40px; /* Rocket size */
+  animation: rocket-move2 5s linear infinite;
+}
+
+@keyframes planet-move {
+  0% {
+    left: -100px;
+  } /* Go off screen to the right */
+  100% {
+    left: 100vw;
+  } /* Arrival off screen left */
+}
+@keyframes planet-move2 {
+  0% {
+    left: 100vw;
+  }
+  100% {
+    left: -100px;
   }
 }
