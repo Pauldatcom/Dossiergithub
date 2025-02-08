@@ -336,13 +336,13 @@ body {
 .moving-rocket1 {
   position: absolute;
   width: 40px; /* Rocket size */
-  animation: rocket-move 6s linear infinite;
+  animation: rocket-move 4s linear infinite;
 }
 
 .moving-rocket2 {
   position: absolute;
   width: 40px; /* Rocket size */
-  animation: rocket-move2 6s linear infinite;
+  animation: rocket-move2 4s linear infinite;
 }
 
 @keyframes rocket-move {
@@ -445,28 +445,28 @@ body {
 }
 
 #satellite1 {
-  background-image: url(assets/satellite1.svg);
+  background-image: url(assets/images/satellite1.svg);
   background-size: cover;
   background-repeat: no-repeat;
   animation-duration: 15s;
 }
 
 #satellite2 {
-  background-image: url(assets/satellite2.svg);
+  background-image: url(assets/images/satellite2.svg);
   background-size: cover;
   background-repeat: no-repeat;
   animation-duration: 20s;
 }
 
 #asteroid1 {
-  background: url(assets/asteroid1.svg);
+  background: url(assets/images/asteroid1.svg);
   background-size: cover;
   background-repeat: no-repeat;
   animation-duration: 25s;
 }
 
 #asteroid2 {
-  background: url(assets/asteroid2.svg);
+  background: url(assets/images/asteroid2.svg);
   background-size: cover;
   background-repeat: no-repeat;
   animation-duration: 30s;
@@ -500,40 +500,8 @@ body {
 
 .planet-container {
   position: absolute;
-  width: 80px;
-  height: auto;
+  transition: transform 3s linear, opacity 3s ease-in;
+  width: 50px;
+  height: 50px;
 }
 
-.planet {
-  width: 80px;
-  display: block;
-}
-
-.moving-planet1 {
-  position: absolute;
-  width: 40px; /* Rocket size */
-  animation: rocket-move 5s linear infinite;
-}
-
-.moving-planet2 {
-  position: absolute;
-  width: 40px; /* Rocket size */
-  animation: rocket-move2 5s linear infinite;
-}
-
-@keyframes planet-move {
-  0% {
-    left: -100px;
-  } /* Go off screen to the right */
-  100% {
-    left: 100vw;
-  } /* Arrival off screen left */
-}
-@keyframes planet-move2 {
-  0% {
-    left: 100vw;
-  }
-  100% {
-    left: -100px;
-  }
-}
