@@ -7,6 +7,9 @@ import {
 
 
 
+
+
+
 let blackhole = document.querySelector(".blackhole-image");
 
 blackhole.addEventListener("mousemove", (event) => {
@@ -335,6 +338,99 @@ function createOrbitingObjects(numObjects = 10) {
 }
 createOrbitingObjects(12);
 
+function createSatelliteExplosion(x, y) {
+  for (let i = 0; i < 10; i++) { 
+    let particle = document.createElement("div");
+    particle.classList.add("satellite-particle");
+
+    
+    particle.style.position = "absolute";
+    particle.style.left = `${x + (Math.random() * 20 - 10)}px`;
+    particle.style.top = `${y + (Math.random() * 20 - 10)}px`;
+
+    document.body.appendChild(particle);
+
+    // Supprimer la particule après 1 seconde
+    setTimeout(() => {
+      particle.remove();
+    }, 1000);
+  }
+}
+
+ function launchSatellite(level) {   //   The satellite spawns and rotates around the black hole as if it had a malfunction then explodes into particles // 
+  let satelliteContainer = document.createElement("div");
+  satelliteContainer.classList.add("satellite-container");
+
+  let satellite = document.createElement("img");
+  satellite.classList.add("satellite");
+
+
+  let isSatellite1 =
+    document.querySelectorAll(".moving-satellite1").length <=
+    document.querySelectorAll(".moving-satellite2").length;
+
+  satellite.src = isSatellite1 ? "assets/images/satellite-2771043_1280.webp" : "assets/images/satellite-2-Etude-cas-Exxelia-2023.webp";
+  satelliteContainer.classList.add(isSatellite1 ? "moving-satellite1" : "moving-satellite2");
+
+  satelliteContainer.appendChild(satellite);
+  document.body.appendChild(satelliteContainer);
+
+  
+  let orbitRadius = 200 + level * 20; 
+  let orbitSpeed = Math.max(5 - level * 0.1, 1); 
+  let orbitAngle = Math.random() * 360;
+
+  let blackhole = document.querySelector(".blackhole-image");
+  let blackholeRect = blackhole.getBoundingClientRect();
+  let centerX = blackholeRect.left + blackholeRect.width / 2;
+  let centerY = blackholeRect.top + blackholeRect.height / 2;
+
+  
+  satelliteContainer.style.position = "absolute";
+  satelliteContainer.style.left = `${centerX + orbitRadius * Math.cos(orbitAngle)}px`;
+  satelliteContainer.style.top = `${centerY + orbitRadius * Math.sin(orbitAngle)}px`;
+
+
+  satelliteContainer.style.animation = `orbit-${level} ${orbitSpeed}s linear infinite`;
+
+  let keyframes = `
+    @keyframes orbit-${level} {
+      0% { transform: rotate(0deg) translate(${orbitRadius}px, 0px) rotate(0deg); }
+      100% { transform: rotate(360deg) translate(${orbitRadius}px, 0px) rotate(-360deg); }
+    }
+  `;
+  let styleSheet = document.styleSheets[0];
+  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+
+ 
+  setTimeout(() => {
+    let rect = satelliteContainer.getBoundingClientRect();
+    let finalX = rect.left + rect.width / 2;
+    let finalY = rect.top + rect.height / 2;
+
+    satelliteContainer.style.animation = "none";
+    satelliteContainer.style.transition = "opacity 1s, transform 1s";
+    satelliteContainer.style.opacity = "0";
+    satelliteContainer.style.transform = "scale(0.1)";
+
+    createSatelliteExplosion(finalX, finalY); 
+    setTimeout(() => {
+      satelliteContainer.remove();
+      launchSatellite(level); 
+    }, 1000);
+  }, 7000);
+}
+
+setInterval(() => {
+  const allSatellites = document.querySelectorAll(".satellite");
+  const satelliteLevel = document.querySelector(".satellite-level");
+
+  if (allSatellites.length < Number(satelliteLevel.innerHTML)) {
+    launchSatellite(Number(satelliteLevel.innerHTML));
+  }
+}, 3000);
+
+
 function launchRocket() {
   let rocketContainer = document.createElement("div"); // Creating a container
   rocketContainer.classList.add("rocket-container");
@@ -382,7 +478,9 @@ setInterval(() => {
   }
 }, 2000);
 
-function launchPlanet() {
+
+
+function launchPlanet() {   // description of the function in this function same style as astronaut
   let planetContainer = document.createElement("div"); // Creating a container
   planetContainer.classList.add("planet-container");
 
@@ -418,8 +516,8 @@ function launchPlanet() {
   planetContainer.style.top = `${spawnY}px`;
   planetContainer.style.transform = "scale(0.5)"; // 
   
-  let targetX = 310; // position center of the blackhole  
-  let targetY = 350;
+  let targetX = 450; // position center of the blackhole  
+  let targetY = 470;
 
 setTimeout(() => {
   
@@ -447,6 +545,7 @@ setInterval(() => {
     launchPlanet();
   }
 }, 3000);
+
 
 
 
@@ -480,8 +579,8 @@ function launchAstronaut() { // 2 img possibility, astronaut going to the center
   astronautContainer.style.transform = "scale(1)";
 
   // 
-  let targetX = 310;
-  let targetY = 350;
+  let targetX = 450;
+  let targetY = 470;
 
   // 
   setTimeout(() => {
@@ -495,7 +594,7 @@ function launchAstronaut() { // 2 img possibility, astronaut going to the center
   }, 5000);
 }
 
-// 
+
 setInterval(() => {
   const allAstronauts = document.querySelectorAll(".astronaut");
   const astronautLevel = document.querySelector(".astronaut-level");
@@ -504,6 +603,7 @@ setInterval(() => {
     launchAstronaut();
   }
 }, 5000);
+
 
 
 function createAspiratingParticles(event) {
