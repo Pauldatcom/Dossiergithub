@@ -4,6 +4,9 @@ import {
   activateSolarFlare,
 } from "./constants/skills.js";
 
+
+
+
 let blackhole = document.querySelector(".blackhole-image");
 
 blackhole.addEventListener("mousemove", (event) => {
@@ -347,11 +350,11 @@ function launchRocket() {
     document.querySelectorAll(".moving-rocket2").length;
 
   if (isRocket1) {
-    rocket.src = "assets/rocket1.png";
+    rocket.src = "assets/images/rocket1.png";
 
     rocketContainer.classList.add("moving-rocket1");
   } else {
-    rocket.src = "assets/rocket2.png";
+    rocket.src = "assets/images/rocket2.png";
 
     rocketContainer.classList.add("moving-rocket2");
   }
@@ -369,7 +372,7 @@ function launchRocket() {
   }, 5000);
 }
 
-// Launches a rocket every 7 seconds
+// Launches a rocket every 2 seconds
 setInterval(() => {
   const allShips = document.querySelectorAll(".rocket");
   const rocketLevel = document.querySelector(".rocket-level");
@@ -377,7 +380,7 @@ setInterval(() => {
   if (allShips.length < Number(rocketLevel.innerHTML)) {
     launchRocket();
   }
-}, 1000);
+}, 2000);
 
 function launchPlanet() {
   let planetContainer = document.createElement("div"); // Creating a container
@@ -394,36 +397,114 @@ function launchPlanet() {
     document.querySelectorAll(".moving-planet2").length;
 
   if (isplanet1) {
-    planet.src = "assets/planet22.webp";
+    planet.src = "assets/images/planet22.webp";
 
     planetContainer.classList.add("moving-planet1");
   } else {
-    planet.src = "assets/planet44.webp";
+    planet.src = "assets/images/planet44.webp";
 
     planetContainer.classList.add("moving-planet2");
   }
 
   planetContainer.appendChild(planet);
 
-  //   Random Y position between 20% and 70%
-  let yPos = Math.random() * 50 + 20;
-  planetContainer.style.top = `${yPos}%`;
+  
+  let spawnSide = Math.random() < 0.5 ? "left" : "right"; // 50% chance of spawning left or right 
+  let spawnX = spawnSide === "left" ? -100 : window.innerWidth + 100; // Spawn out of the screen 
+  let spawnY = Math.random() * window.innerHeight * 0.6 + 20; // Position Y random
+
+  planetContainer.style.position = "absolute";
+  planetContainer.style.left = `${spawnX}px`;
+  planetContainer.style.top = `${spawnY}px`;
+  planetContainer.style.transform = "scale(0.5)"; // 
+  
+  let targetX = 310; // position center of the blackhole  
+  let targetY = 350;
+
+setTimeout(() => {
+  
+  // animation planet go in the blackhole
+  planetContainer.style.transition = "transform 4s linear"; 
+  planetContainer.style.transform = `translate(${targetX - spawnX}px, ${targetY - spawnY}px) scale(0.1)`; // down sizing the planet
+}, 100);
+
+
 
   document.body.appendChild(planetContainer);
+
+  
   setTimeout(() => {
     planetContainer.remove();
+  }, 4000);
+}
+
+
+setInterval(() => {
+  const allPlanets = document.querySelectorAll(".planet");
+  const planetLevel = document.querySelector(".planet-level");
+
+  if (allPlanets.length < Number(planetLevel.innerHTML)) {
+    launchPlanet();
+  }
+}, 3000);
+
+
+
+function launchAstronaut() { // 2 img possibility, astronaut going to the center of the blackhole, like the function planet
+  let astronautContainer = document.createElement("div"); 
+  astronautContainer.classList.add("astronaut-container");
+
+  let astronaut = document.createElement("img"); 
+  astronaut.classList.add("astronaut");
+
+  
+  let isAstronaut1 =
+    document.querySelectorAll(".moving-astronaut1").length <=
+    document.querySelectorAll(".moving-astronaut2").length;
+
+  astronaut.src = isAstronaut1 ? "assets/images/astronaut-6364144_960_720.webp" : "assets/images/astronaut-2844243_1280.webp";
+  astronautContainer.classList.add(isAstronaut1 ? "moving-astronaut1" : "moving-astronaut2");
+
+  astronautContainer.appendChild(astronaut);
+  document.body.appendChild(astronautContainer);
+
+  
+  let angle = Math.random() * Math.PI * 2; 
+  let spawnRadius = 300; 
+  let spawnX = window.innerWidth / 2 + spawnRadius * Math.cos(angle);
+  let spawnY = window.innerHeight / 2 + spawnRadius * Math.sin(angle);
+
+  astronautContainer.style.position = "absolute";
+  astronautContainer.style.left = `${spawnX}px`;
+  astronautContainer.style.top = `${spawnY}px`;
+  astronautContainer.style.transform = "scale(1)";
+
+  // 
+  let targetX = 310;
+  let targetY = 350;
+
+  // 
+  setTimeout(() => {
+    astronautContainer.style.transition = "transform 5s ease-in-out"; 
+    astronautContainer.style.transform = `translate(${targetX - spawnX}px, ${targetY - spawnY}px) rotate(720deg) scale(0.1)`;
+  }, 100);
+
+  // 
+  setTimeout(() => {
+    astronautContainer.remove();
   }, 5000);
 }
 
-// Launches a rocket every 7 seconds
+// 
 setInterval(() => {
-  const allShips = document.querySelectorAll(".planet");
-  const PlanetLevel = document.querySelector(".planet-level");
+  const allAstronauts = document.querySelectorAll(".astronaut");
+  const astronautLevel = document.querySelector(".astronaut-level");
 
-  if (allShips.length < Number(PlanetLevel.innerHTML)) {
-    launchPlanet();
+  if (allAstronauts.length < Number(astronautLevel.innerHTML)) {
+    launchAstronaut();
   }
-}, 1000);
+}, 5000);
+
 
 function createAspiratingParticles(event) {
   const particle = document.createElement("div");
