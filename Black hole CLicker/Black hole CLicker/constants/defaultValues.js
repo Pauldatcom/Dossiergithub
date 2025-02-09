@@ -15,7 +15,7 @@ export const defaultUpgradeValues = [
   },
   {
     name: "satellite",
-    image: "./assets/images/satellite.png",
+    image: "assets/images/icons8-satellite-48.png",
     cost: 400,
     increase: 32,
     type: "upgrade",
@@ -61,7 +61,7 @@ export const defaultArtifactValues = [
   {
     name: "Artifact 1",
     description: "Permanently increase all darkmatter gained by x amount",
-    image: "assets/planet2.jpg",
+    image: "assets/images/astronaut-2844243_1280.webp",
     cost: 18000,
     increase: 1,
     type: "artifact",

@@ -71,10 +71,11 @@ body {
 #upgrades-container {
   max-height: 400px;
   width: 500px;
+  background-color: #02181b;
   margin-top: 20px;
   padding: 20px;
   overflow-y: scroll;
-  border: 2px rgb(150, 150, 150) solid;
+  border: 4px rgb(150, 150, 150) solid;
   border-radius: 4px;
   box-shadow: 2px 2px 4px rgb(140, 140, 140);
   position: relative;
@@ -107,7 +108,8 @@ body {
   justify-content: space-between;
   width: 300px;
   height: 60px;
-  border: 3px solid #eedddd;
+  border: 5px solid #eedddd;
+  box-shadow: 2px 2px 4px rgb(140, 140, 140);
   padding: 20px 40px;
   border-radius: 10px;
   position: relative;
@@ -149,9 +151,10 @@ body {
 .mid-section h4 {
   margin: auto;
   height: auto;
+  color:#187bec; 
   margin-bottom: 10px;
   margin-top: 30px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .cost-info {
@@ -204,7 +207,7 @@ body {
 
 .statistics {
   position: absolute;
-  top: 750px;
+  top: 700px;
   width: 450px;
   padding: 35px;
   border: 4px solid white;
@@ -577,4 +580,6 @@ body {
   50% { opacity: 0.5; transform: scale(1.5); }
   100% { opacity: 0; transform: scale(2); }
 }
+
+
 
