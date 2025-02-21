@@ -6,7 +6,7 @@ document.body.style.overflow = 'hidden';
 document.documentElement.style.overflow = 'hidden';
 
 const characters = {
-  mr_fantastique: "public/models/20_mr._fantastic_mua.glb",
+  mme_fantastic: "public/models/mmefantastic.glb",
   the_thing: "public/models/the_thingtexturedno_rig.glb",
   human_torch:"public/models/Humantorch.glb",
   mr_kang:"public/models/kang6.glb",
@@ -32,10 +32,10 @@ window.onload = function() {
     <h1>Fantastic Four Runner</h1>
     <p>Un jeu inspiré de l'univers Marvel Phase 6</p>
     <div id="character-selection" style="display: flex; gap: 20px; margin: 20px;">
-      <img src="public/mrfantasticicon.webp" style="width: 80px; cursor: pointer;" data-character="mr_fantastique">
-      <img src="public/Thingicon.webp" style="width: 80px; cursor: pointer;" data-character="the_thing">
-      <img src="public/torchicon.webp" style="width: 80px; cursor: pointer;" data-character="human_torch">
-      <img src="public/kangicon.webp" style="width: 80px; cursor: pointer;" data-character="mr_kang">
+      <img src="public/icons/mrfantasticicon.webp" style="width: 80px; cursor: pointer;" data-character="mme_fantastic">
+      <img src="public/icons/Thingicon.webp" style="width: 80px; cursor: pointer;" data-character="the_thing">
+      <img src="public/icons/torchicon.webp" style="width: 80px; cursor: pointer;" data-character="human_torch">
+      <img src="public/icons/kangicon.webp" style="width: 80px; cursor: pointer;" data-character="mr_kang">
     </div>
     <button id="startButton" style="padding: 10px 20px; font-size: 20px; margin-top: 20px; cursor: pointer;">Jouer</button>
   `;
@@ -49,7 +49,7 @@ window.onload = function() {
   });
 
   const launcherMusic = document.createElement('audio');
-launcherMusic.src = 'public/sonMarvel.mp4'; // Chemin vers ta musique
+launcherMusic.src = 'public/sounds/sonMarvel.mp4'; // Chemin vers ta musique
 // launcherMusic.loop = true;  // Pour qu'elle tourne en boucle
 // launcherMusic.autoplay = true;   //Lance automatiquement
 launcherMusic.volume = 0.1;
@@ -115,7 +115,7 @@ scene.add(rightWall);
 
    // Ajout d'une lumière ambiante plus intense pour éclairer la piste
   
-
+  
   const loader = new GLTFLoader();
   let trackModels = []; // Déclaration correcte en dehors de la boucle
 
@@ -173,6 +173,7 @@ scene.add(rightWall);
 
 let gameOverElement;
 let isGameOver = false;
+let obstacleInterval = setInterval(createObstacles, 2000);
 
 // Game Over Display
 function showGameOver() {
@@ -185,27 +186,28 @@ function showGameOver() {
   gameOverElement.style.fontSize = "48px";
   gameOverElement.innerText = "GAME OVER\nPress Arrow Key to Restart";
   document.body.appendChild(gameOverElement);
+  clearInterval(obstacleInterval);
   cancelAnimationFrame(animationId);
+  
   isGameOver = true;
 }
 
 
-const collisionSound = new Audio('public/songcollision1.mp3');
+const collisionSound = new Audio('public/sounds/songcollision1.mp3');
 collisionSound.volume = 0.7;  // Volume à 70%
 // Collision Detection
-function checkCollision(a, b) {
-  if (a.userData.invincible) return false;
-  const boxA = new THREE.Box3().setFromObject(a);
-  const boxB = new THREE.Box3().setFromObject(b);
-  boxB.expandByScalar(0.5);
-
+function checkCollision(obstacle) {
+  if (character.userData.invincible) return false;
+  const boxB = new THREE.Box3().setFromObject(obstacle);
   
-  if (boxA.intersectsBox(boxB)) {
-    collisionSound.play();  // Joue le son de collision
+  boxB.expandByScalar(0.2);
+  
+  if (characterHitbox.intersectsBox(boxB)) {
+    collisionSound.play();
     return true;
   }
+  return false;
 }
-
 // Video Background Setup
 const video = document.createElement("video");
 video.src =
@@ -238,7 +240,34 @@ loaderCharacter.load(characters[selectedCharacter], (gltf) => {
   character.position.set(lanes[characterLane], 1, 5);
   character.rotation.y = Math.PI;
   scene.add(character);
+
+  // On définit la taille désirée pour la hitbox (largeur, hauteur, profondeur)
+  const hitboxSize = new THREE.Vector3(1, 1.5, 1); // Ajuste ces valeurs selon ton modèle
+  // On positionne la hitbox de façon à couvrir le bas du personnage (ajustement vertical)
+  characterHitbox.setFromCenterAndSize(
+    character.position.clone().add(new THREE.Vector3(0, hitboxSize.y / 2, 0)),
+    hitboxSize
+  );
+  if (selectedCharacter === "mr_kang") {
+    character.rotation.y = Math.PI * 2; // Tourne Kang dans l'autre sens
+  }
 });
+
+let characterHitbox = new THREE.Box3();
+
+
+function updateCharacterHitbox() {
+  if (character) {
+    // On récupère la taille actuelle (si jamais tu veux la changer dynamiquement)
+    const hitboxSize = characterHitbox.getSize(new THREE.Vector3());
+    // On repositionne la hitbox au centre du personnage, en ajoutant une offset verticale
+    characterHitbox.setFromCenterAndSize(
+      character.position.clone().add(new THREE.Vector3(0, hitboxSize.y / 2, 0)),
+      hitboxSize
+    );
+  }
+}
+
 
 let flameModel, portalModel, rockModel;
 
@@ -337,10 +366,12 @@ function createObstacle(type, zPos, lane) {
 }
 
 // Paramètres pour le spawn des obstacles
-const obstacleSpawnCount = 2; // Nombre d'obstacles à générer à chaque intervalle
+const MAX_OBSTACLES = 8;
+const obstacleSpawnCount = 1; // Nombre d'obstacles à générer à chaque intervalle
 const obstacleSpacing = 200; // Distance minimale entre les obstacles
 
 function createObstacles() {
+  if (obstacles.length >= MAX_OBSTACLES) return;
   const lanes = [-8, 0, 8];
   for (let i = 0; i < obstacleSpawnCount; i++) {
     const lane = lanes[Math.floor(Math.random() * lanes.length)];
@@ -351,12 +382,8 @@ function createObstacles() {
   };
 };
 
-setInterval(createObstacles, 2000); // Créer des obstacles régulièrement sur chaque lane
+setInterval(createObstacles, 1000); // Créer des obstacles régulièrement sur chaque lane
 
-function createObstacleForLane(lane, zPos) {
-  const type = laneObstacles[lane];
-  createObstacle(type, zPos, lane); // Correction : plus d'appel récursif
-}
 
 // Création des obstacles avec une position initiale suffisamment loin
 setTimeout(() => {
@@ -372,8 +399,17 @@ setTimeout(() => {
 function handleObstacles() {
   obstacles.forEach((obs) => {
     obs.position.z += gameSpeed;
+    // Lorsque l'obstacle dépasse la zone visible, on le repositionne avec un décalage aléatoire
     if (obs.position.z > 5) {
-      obs.position.z = -300; // Réinitialiser la position pour réapparaître loin
+      // Réinitialisation avec un offset aléatoire pour éviter l'empilement
+      obs.position.z = -300 - Math.random() * 100;
+      // Changer de voie de manière aléatoire
+      const lanes = [-8, 0, 8];
+      obs.position.x = lanes[Math.floor(Math.random() * lanes.length)];
+    }
+    // Vérification de collision
+    if (checkCollision(obs)) {
+      showGameOver();
     }
   });
 }
@@ -397,8 +433,18 @@ function restartGame() {
     score = 0;
     scoreElement.innerText = `Score: ${score}`;
     character.position.set(0, 1, 5);
-    obstacles.forEach((obstacle) => (obstacle.position.z = -300));
+    
+    // Supprimer les obstacles de la scène et vider le tableau
+    obstacles.forEach((obstacle) => {
+      scene.remove(obstacle);
+    });
+    obstacles.length = 0;
+    
     isGameOver = false;
+    
+    // Redémarrer l'intervalle de création des obstacles
+    obstacleInterval = setInterval(createObstacles, 2000);
+    
     animate();
   }
 }
@@ -460,10 +506,10 @@ function down(){}
 
 
 // Ajout des boutons
-const leftButton = createButton("public/arrow-left-line.svg", moveLeft);
-const rightButton = createButton("public/arrow-right-line.svg", moveRight);
-const upButton = createButton("public/arrow-up-line.svg", jump);
-const downButton = createButton("public/arrow-down-line.svg", down,);
+const leftButton = createButton("public/icons/arrow-left-line.svg", moveLeft);
+const rightButton = createButton("public/icons/arrow-right-line.svg", moveRight);
+const upButton = createButton("public/icons/arrow-up-line.svg", jump);
+const downButton = createButton("public/icons/arrow-down-line.svg", down,);
 
 
 leftButton.style.gridArea = "left";
@@ -604,15 +650,15 @@ function animate() {
   animationId = requestAnimationFrame(animate);
   handleJump();
   handleObstacles();
-  createObstacleForLane();
   increaseSpeed();
+  updateCharacterHitbox();
   score += 1;
   scoreElement.innerText = `Score: ${score}`;
 
   obstacles.forEach((obstacle) => {
     obstacle.position.z += 0.3;
     if (obstacle.position.z > 5) obstacle.position.z = -300;
-    if (checkCollision(character, obstacle)) {
+    if (checkCollision(obstacle)) {
       showGameOver();
     }
   });

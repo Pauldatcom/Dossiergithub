@@ -1,12 +1,44 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Sélection des Personnages</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <script type="module" src="/src/main.js"></script>
+    <audio id="theme-song" loop>
+      <source
+        src="https://www.televisiontunes.com/uploads/audio/Fantastic%20Four%20-%201994.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <h1 class="title">Sélection des Personnages</h1>
+
+    <div class="featured-character">
+      <img src="image2.png" alt="Personnage Sélectionné" />
+    </div>
+
+    <div class="character-grid">
+      <div class="character-slot" data-image="image1.jpg">
+        <img src="image10.png" alt="Personnage 1" />
+        <div class="character-name">Personnage 1</div>
+      </div>
+      <div class="character-slot" data-image="image2.png">
+        <img src="image9.png" alt="Personnage 2" />
+        <div class="character-name">Personnage 2</div>
+      </div>
+      <div class="character-slot" data-image="image3.PNG">
+        <img src="image8.png" alt="Personnage 3" />
+        <div class="character-name">Personnage 3</div>
+      </div>
+      <div class="character-slot" data-image="image4.jpg">
+        <img src="image11.png" alt="Personnage 4" />
+        <div class="character-name">Personnage 4</div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
   </body>
 </html>
