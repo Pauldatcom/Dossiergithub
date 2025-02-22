@@ -7,14 +7,10 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <audio id="theme-song" loop>
-      <source
-        src="https://www.televisiontunes.com/uploads/audio/Fantastic%20Four%20-%201994.mp3"
-        type="audio/mpeg"
-      />
-    </audio>
-
     <h1 class="title">Sélection des Personnages</h1>
+    <div id="model-container"></div>
+
+    <button id="playButton">Jouer</button>
 
     <div class="featured-character">
       <img src="image2.png" alt="Personnage Sélectionné" />
@@ -38,7 +34,10 @@
         <div class="character-name">Personnage 4</div>
       </div>
     </div>
+    <audio id="bgMusic" src="public/sounds/sonMarvel.mp4" loop autoplay></audio>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js">
+       console.log("Personnage sélectionné stocké :", localStorage.getItem("selectedCharacter"));
+    </script>
   </body>
 </html>

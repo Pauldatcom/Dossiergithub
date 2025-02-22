@@ -2,71 +2,82 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-document.body.style.overflow = 'hidden';
-document.documentElement.style.overflow = 'hidden';
-
+const gameMusic = new Audio("public/sounds/CONVERSATION.mp3"); // Remplace par ton fichier
+gameMusic.loop = true; // La musique tourne en boucle
+gameMusic.volume = 0.4; // Volume de départ (ajuste si nécessaire)
+document.body.appendChild(gameMusic);
+const obstacles = [];
+const obstacleTypes = [];
 const characters = {
   mme_fantastic: "public/models/mmefantastic.glb",
   the_thing: "public/models/the_thingtexturedno_rig.glb",
-  human_torch:"public/models/Humantorch.glb",
-  mr_kang:"public/models/kang6.glb",
+  human_torch: "public/models/Humantorch.glb",
+  mr_kang: "public/models/kang6.glb",
 };
 
-let selectedCharacter = "the_thing";
 
-// Launcher pour le jeu
 window.onload = function() {
-  const launcher = document.createElement('div');
-  launcher.style.position = 'fixed';
-  launcher.style.top = '0';
-  launcher.style.left = '0';
-  launcher.style.width = '100%';
-  launcher.style.height = '100%';
-  launcher.style.background = 'linear-gradient(135deg,rgb(22, 22, 22), #1f1f1f)';
-  launcher.style.display = 'flex';
-  launcher.style.flexDirection = 'column';
-  launcher.style.alignItems = 'center';
-  launcher.style.justifyContent = 'center';
-  launcher.style.color = '#ffffff';
-  launcher.innerHTML = `
-    <h1>Fantastic Four Runner</h1>
-    <p>Un jeu inspiré de l'univers Marvel Phase 6</p>
-    <div id="character-selection" style="display: flex; gap: 20px; margin: 20px;">
-      <img src="public/icons/mrfantasticicon.webp" style="width: 80px; cursor: pointer;" data-character="mme_fantastic">
-      <img src="public/icons/Thingicon.webp" style="width: 80px; cursor: pointer;" data-character="the_thing">
-      <img src="public/icons/torchicon.webp" style="width: 80px; cursor: pointer;" data-character="human_torch">
-      <img src="public/icons/kangicon.webp" style="width: 80px; cursor: pointer;" data-character="mr_kang">
-    </div>
-    <button id="startButton" style="padding: 10px 20px; font-size: 20px; margin-top: 20px; cursor: pointer;">Jouer</button>
-  `;
-  document.body.appendChild(launcher);
+  let selectedCharacter = localStorage.getItem("selectedCharacter");
+
+  console.log("Personnage chargé depuis localStorage :", selectedCharacter); // DEBUG
+ 
   
-  document.querySelectorAll('#character-selection img').forEach(img => {
-    img.addEventListener('click', () => {
-      selectedCharacter = img.getAttribute('data-character');
-      alert('Personnage sélectionné : ' + selectedCharacter);
-    });
-  });
 
-  const launcherMusic = document.createElement('audio');
-launcherMusic.src = 'public/sounds/sonMarvel.mp4'; // Chemin vers ta musique
-// launcherMusic.loop = true;  // Pour qu'elle tourne en boucle
-// launcherMusic.autoplay = true;   //Lance automatiquement
-launcherMusic.volume = 0.1;
+  // Vérification : Si la clé est invalide, on charge "the_thing" par défaut
+  if (!selectedCharacter || !characters[selectedCharacter]) {
+    console.error("Erreur: Personnage invalide, chargement de 'the_thing' par défaut.");
+    selectedCharacter = "the_thing";
+  }
 
-
-document.body.appendChild(launcherMusic);
-
-  document.getElementById('startButton').addEventListener('click', () => {
-    launcher.remove();
-    initGame();
-  });
-
-
+  console.log("Personnage final chargé :", selectedCharacter); // DEBUG
+  initGame(selectedCharacter);
+  
+  gameMusic.play().catch(error => console.log("Lecture automatique bloquée :", error));
+  
 };
-function initGame() {
+
+function initGame(selectedCharacter) {
   
   const scene = new THREE.Scene();
+  function showGameTips(scene) {
+    const tipsContainer = document.createElement("div");
+    tipsContainer.id = "gameTips";
+    tipsContainer.style.position = "absolute";
+    tipsContainer.style.top = "50%";
+    tipsContainer.style.left = "50%";
+    tipsContainer.style.transform = "translate(-50%, -50%)";
+    tipsContainer.style.width = "80%";
+    tipsContainer.style.maxWidth = "600px";
+    tipsContainer.style.background = "rgba(0, 0, 0, 0.8)";
+    tipsContainer.style.padding = "20px";
+    tipsContainer.style.borderRadius = "10px";
+    tipsContainer.style.boxShadow = "0px 0px 20px rgba(255, 255, 255, 0.8)";
+    tipsContainer.style.color = "white";
+    tipsContainer.style.textAlign = "center";
+    tipsContainer.style.fontFamily = "'Comic Sans MS', sans-serif";
+    tipsContainer.style.zIndex = "1000";
+    tipsContainer.innerHTML = `
+      <div class="title" style="font-size: 28px; font-weight: bold; color: #ffcc00; text-shadow: 2px 2px 8px rgba(255, 204, 0, 0.8);">
+        Astuces
+      </div>
+      <div class="tips" style="font-size: 20px; line-height: 1.6;">
+        ➜ <strong style="color: #00ccff;">Flèche Haut</strong> : Sauter<br />
+        ➜ <strong style="color: #00ccff;">Flèche Gauche</strong> : Aller à gauche<br />
+        ➜ <strong style="color: #00ccff;">Flèche Droite</strong> : Aller à droite<br />
+        ➜ <strong style="color: #00ccff;">Bouton P</strong> : Activer le pouvoir (toutes les 30s, dure 15s)
+      </div>
+    `;
+  
+    document.body.appendChild(tipsContainer);
+  
+    // Faire disparaître le message après 3 secondes
+    setTimeout(() => {
+      tipsContainer.style.opacity = "0";
+      setTimeout(() => tipsContainer.remove(), 500);
+    }, 3000);
+  }
+
+showGameTips(scene);
   const wallShaderMaterial = new THREE.ShaderMaterial({ // Shaders GLSL , Variables globale , VertexShader "vUv" coordonnes
     uniforms: {
         time: { value: 0 },
@@ -178,19 +189,94 @@ let obstacleInterval = setInterval(createObstacles, 2000);
 // Game Over Display
 function showGameOver() {
   gameOverElement = document.createElement("div");
-  gameOverElement.style.position = "absolute";
-  gameOverElement.style.top = "50%";
-  gameOverElement.style.left = "50%";
-  gameOverElement.style.transform = "translate(-50%, -50%)";
-  gameOverElement.style.color = "#ff0000";
-  gameOverElement.style.fontSize = "48px";
-  gameOverElement.innerText = "GAME OVER\nPress Arrow Key to Restart";
+  gameOverElement.id = "gameOverElement";
+  gameOverElement.style.position = "fixed";
+  gameOverElement.style.top = "0";
+  gameOverElement.style.left = "0";
+  gameOverElement.style.width = "100%";
+  gameOverElement.style.height = "100%";
+  gameOverElement.style.background = "black";
+  gameOverElement.style.display = "flex";
+  gameOverElement.style.flexDirection = "column";
+  gameOverElement.style.alignItems = "center";
+  gameOverElement.style.justifyContent = "center";
+  gameOverElement.style.opacity = "0"; // Apparition immédiate
+  gameOverElement.style.transition = "opacity 2s ease-in-out";
+  gameOverElement.style.zIndex = "9999";
+
+  const gameOverText = document.createElement("div");
+  gameOverText.innerText = "GAME OVER";
+  gameOverText.style.fontSize = "80px";
+  gameOverText.style.fontWeight = "bold";
+  gameOverText.style.color = "red";
+  gameOverText.style.fontFamily = "'Press Start 2P', sans-serif"; // Police type rétro
+  gameOverText.style.textShadow = "0 0 10px crimson, 0 0 10px darkred, 0 0 10px red";
+  gameOverText.style.animation = "shake 1.5s ease-in-out infinite alternate";
+  gameOverText.style.marginBottom = "80px"; // Espacement augmenté pour que les boutons soient bien en dessous
+    // Conteneur des boutons
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.flexDirection = "column";
+    buttonContainer.style.alignItems = "center"; // Centrage horizontal
+    buttonContainer.style.gap = "20px";
+    buttonContainer.style.marginTop = "20px";
+  
+    // Bouton "Recommencer"
+    const restartButton = document.createElement("button");
+    restartButton.innerText = "Recommencer";
+    restartButton.style.padding = "15px 30px";
+    restartButton.style.fontSize = "20px";
+    restartButton.style.fontWeight = "bold";
+    restartButton.style.background = "#007BFF";
+    restartButton.style.color = "white";
+    restartButton.style.border = "none";
+    restartButton.style.cursor = "pointer";
+    restartButton.style.transition = "0.3s";
+    restartButton.onmouseover = () => restartButton.style.background = "darkred";
+    restartButton.onmouseout = () => restartButton.style.background = "crimson";
+    restartButton.onclick = restartGame;
+  
+    // Bouton "Quitter"
+    const quitButton = document.createElement("button");
+    quitButton.innerText = "Quitter";
+    quitButton.style.padding = "15px 30px";
+    quitButton.style.fontSize = "20px";
+    quitButton.style.fontWeight = "bold";
+    quitButton.style.background = "DC3545";
+    quitButton.style.color = "white";
+    quitButton.style.border = "none";
+    quitButton.style.cursor = "pointer";
+    quitButton.style.transition = "0.3s";
+    quitButton.onmouseover = () => quitButton.style.background = "darkgray";
+    quitButton.onmouseout = () => quitButton.style.background = "gray";
+    quitButton.onclick = () => window.location.href = "launcher.html"; // Redirection au menu de sélection
+  
+    buttonContainer.appendChild(restartButton);
+    buttonContainer.appendChild(quitButton);
+    
+
+  gameOverElement.appendChild(gameOverText);
+  gameOverElement.appendChild(buttonContainer);
   document.body.appendChild(gameOverElement);
+
+
   clearInterval(obstacleInterval);
   cancelAnimationFrame(animationId);
-  
+  setTimeout(() => {
+    gameOverElement.style.opacity = "1";
+  }, 100);
   isGameOver = true;
 }
+
+// const style = document.createElement("style"); // Effect the game over shaking 
+// style.innerHTML = `
+//   @keyframes shake {
+//     0% { transform: translateX(-2px) rotate(-1deg); }
+//     50% { transform: translateX(2px) rotate(1deg); }
+//     100% { transform: translateX(-2px) rotate(-1deg); }
+//   }
+// `;
+// document.head.appendChild(style);
 
 
 const collisionSound = new Audio('public/sounds/songcollision1.mp3');
@@ -333,8 +419,7 @@ const laneObstacles = {
   [0]:'flame',
   [8]:'portal'
 };
-const obstacles = [];
-const obstacleTypes = [];
+
 
 function createObstacle(type, zPos, lane) {
   let obstacle;
@@ -546,7 +631,7 @@ scoreElement.innerText = "Score: 0";
 document.body.appendChild(scoreElement);
 
 const menuIcon = document.createElement("img");
-menuIcon.src = "public/settings.svg";  // Chemin vers ton icône
+menuIcon.src = "public/icons/settings.svg";  // Chemin vers ton icône
 menuIcon.style.width = "40px";
 menuIcon.style.height = "40px";
 menuIcon.style.position = "absolute";
@@ -601,18 +686,49 @@ resumeButton.addEventListener("click", () => {
   animate(); // Relance l'animation du jeu
 });
 
+const startMusicButton = document.createElement("button");
+startMusicButton.innerText = "Activer la musique";
+startMusicButton.style.padding = "10px 20px";
+startMusicButton.style.fontSize = "18px";
+
+startMusicButton.addEventListener("click", () => {
+  gameMusic.play().then(() => {
+    console.log("Musique de jeu activée !");
+    startMusicButton.style.display = "none"; // Cache le bouton après activation
+  }).catch(error => console.error("Erreur de lecture automatique :", error));
+});
+
+SettingsMenu.appendChild(startMusicButton);
 
 const muteButton = document.createElement("button");
 muteButton.innerText = "Couper la musique";
 muteButton.style.padding = "10px 20px";
 muteButton.style.fontSize = "18px";
+muteButton.addEventListener("click", () => {
+  gameMusic.muted = !gameMusic.muted;
+  muteButton.innerText = gameMusic.muted ? "Activer la musique" : "Couper la musique";
+});
+SettingsMenu.appendChild(muteButton);
+
+const volumeSlider = document.createElement("input");
+volumeSlider.type = "range";
+volumeSlider.min = "0";
+volumeSlider.max = "1";
+volumeSlider.step = "0.01";
+volumeSlider.value = gameMusic.volume;
+
+volumeSlider.addEventListener("input", (e) => {
+  gameMusic.volume = e.target.value;
+});
+
+SettingsMenu.appendChild(volumeSlider);
 
 const quitButton = document.createElement("button");
 quitButton.innerText = "Quitter";
 quitButton.style.padding = "10px 20px";
 quitButton.style.fontSize = "18px";
 quitButton.addEventListener("click", () => {
-  window.location.reload(); // Recharge la page pour revenir au menu principal
+  window.location.href = "index.html"; // Recharge la page pour revenir au menu principal
 });
 
 // Ajouter les boutons au menu
