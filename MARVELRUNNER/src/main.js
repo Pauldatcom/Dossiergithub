@@ -2,9 +2,13 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+
+document.body.style.overflow = "hidden";
+document.documentElement.style.overflow = "hidden";
+
 const gameMusic = new Audio("public/sounds/CONVERSATION.mp3"); // Remplace par ton fichier
 gameMusic.loop = true; // La musique tourne en boucle
-gameMusic.volume = 0.4; // Volume de départ (ajuste si nécessaire)
+gameMusic.volume = 0.2; // Volume de départ (ajuste si nécessaire)
 document.body.appendChild(gameMusic);
 const obstacles = [];
 const obstacleTypes = [];
@@ -154,6 +158,51 @@ scene.add(rightWall);
   
   let powerAvailable = true;
   let powerActive = false;
+
+  // Création du conteneur de l'indicateur de pouvoir
+const powerIndicator = document.createElement("div");
+powerIndicator.style.position = "absolute";
+powerIndicator.style.left = "20px";
+powerIndicator.style.top = "100px";
+powerIndicator.style.width = "50px";
+powerIndicator.style.height = "50px";
+powerIndicator.style.borderRadius = "50%";
+powerIndicator.style.background = "red"; // Commence en red car le pouvoir est indisponible
+powerIndicator.style.border = "3px solid white";
+powerIndicator.style.boxShadow = "0 0 10px rgba(255, 255, 255, 0.8)";
+document.body.appendChild(powerIndicator);
+
+// Fonction pour mettre à jour l'indicateur
+function updatePowerIndicator(available) {
+  powerIndicator.style.background = available ? "green" : "red";
+}
+
+setTimeout(() => {
+  powerAvailable = true;
+  updatePowerIndicator(true); // Passe en vert après 30 sec
+}, 30000);
+
+
+// Modification de l'événement pour activer le pouvoir
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'p' && powerAvailable && !powerActive) {
+    powerActive = true;
+    powerAvailable = false;
+    activatePower();
+    
+    // Change l'indicateur en rouge pendant la recharge
+    updatePowerIndicator(false);
+
+    setTimeout(() => { 
+      powerActive = false; 
+    }, 15000); // Pouvoir dure 15 secondes
+
+    setTimeout(() => { 
+      powerAvailable = true; 
+      updatePowerIndicator(true); // Passe en vert quand le pouvoir est prêt
+    }, 30000); // Recharge de 30 secondes
+  }
+});
   
 
   window.addEventListener('keydown', (e) => {
@@ -188,6 +237,7 @@ let obstacleInterval = setInterval(createObstacles, 2000);
 
 // Game Over Display
 function showGameOver() {
+  checkBestScore();
   gameOverElement = document.createElement("div");
   gameOverElement.id = "gameOverElement";
   gameOverElement.style.position = "fixed";
@@ -618,17 +668,46 @@ gameTitle.style.textTransform = "uppercase";
 gameTitle.style.textShadow = "3px 3px 15px rgba(0, 255, 255, 0.9)";
 document.body.appendChild(gameTitle);
 
-// Score dynamique
+let bestScore = localStorage.getItem("bestScore") || 0;
+let score = 0;
+
+// Création de l'affichage du score
 const scoreElement = document.createElement("div");
 scoreElement.style.position = "absolute";
-scoreElement.style.top = "250px";
-scoreElement.style.left = "47%";
+scoreElement.style.top = "20px";
+scoreElement.style.left = "50%";
+scoreElement.style.transform = "translateX(-50%)";
 scoreElement.style.color = "#ffffff";
-scoreElement.style.fontSize = "28px";
+scoreElement.style.fontSize = "24px";
 scoreElement.style.fontWeight = "bold";
 scoreElement.style.fontFamily = "Marvel, sans-serif";
-scoreElement.innerText = "Score: 0";
 document.body.appendChild(scoreElement);
+
+// Création de l'affichage du meilleur score
+const bestScoreElement = document.createElement("div");
+bestScoreElement.style.position = "absolute";
+bestScoreElement.style.top = "50px";
+bestScoreElement.style.left = "50%";
+bestScoreElement.style.transform = "translateX(-50%)";
+bestScoreElement.style.color = "gold";
+bestScoreElement.style.fontSize = "22px";
+bestScoreElement.style.fontWeight = "bold";
+bestScoreElement.style.fontFamily = "Marvel, sans-serif";
+document.body.appendChild(bestScoreElement);
+
+// Mise à jour de l'affichage
+function updateScoreDisplay() {
+  scoreElement.innerText = `Score: ${score}`;
+  bestScoreElement.innerText = `Meilleur Score: ${bestScore}`;
+}
+
+// Vérifie et met à jour le meilleur score
+function checkBestScore() {
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("bestScore", bestScore); // Sauvegarde le meilleur score
+  }
+}
 
 const menuIcon = document.createElement("img");
 menuIcon.src = "public/icons/settings.svg";  // Chemin vers ton icône
@@ -770,6 +849,7 @@ function animate() {
   updateCharacterHitbox();
   score += 1;
   scoreElement.innerText = `Score: ${score}`;
+  updateScoreDisplay();
 
   obstacles.forEach((obstacle) => {
     obstacle.position.z += 0.3;
@@ -796,7 +876,7 @@ function animate() {
 // leaderboard.style.fontSize = "24px";
 // leaderboard.style.fontFamily = "Marvel, sans-serif";
 // document.body.appendChild(leaderboard);
-
+ let bestScore = localStorage.getItem("bestScore") || 0;
  let score = 0;
  let highScores = [0, 0, 0];
 

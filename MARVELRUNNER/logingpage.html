@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - Marvel 4 Fantastiques</title>
+    <link rel="stylesheet" href="logstyle.css" />
+  </head>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Vérifie que le DOM est bien chargé
+      console.log("Script chargé !");
+  
+      // Sélectionne tous les boutons présents sur la page
+      const loginButtons = document.querySelectorAll(".btn");
+  
+      // Vérifie si un bouton a bien été trouvé
+      if (loginButtons.length > 0) {
+        console.log("Bouton trouvé !");
+        loginButtons.forEach(button => {
+          button.addEventListener("click", (event) => {
+            event.preventDefault(); // Empêche toute action par défaut
+            console.log("Redirection en cours...");
+            setTimeout(() => {
+            window.location.assign("index.html"); // Redirection forcée
+          }, 100);
+        });
+      });
+      } else {
+        console.log("Aucun bouton trouvé !");
+      }
+    });
+  </script>
+  
+  <body>
+    <!-- Titre du jeu avec effet néon -->
+    <div class="title-container">
+      <h1 class="game-title">ESCAPE FROM KANG</h1>
+    </div>
+
+    <div class="login-container">
+      <img src="./MArvel.png" alt="Marvel Logo" />
+      <h2>Connexion</h2>
+      <input type="email" placeholder="E-mail" required />
+      <input type="password" placeholder="Mot de passe" required />
+      <input type="date" placeholder="Date de naissance" required />
+      <select required>
+        <option value="">Sélectionnez votre sexe</option>
+        <option value="homme">Homme</option>
+        <option value="femme">Femme</option>
+        <option value="autre">Autre</option>
+      </select>
+      <button class="btn">Se connecter</button>
+
+      <p class="text-info">Ou connectez-vous avec :</p>
+      <div class="social-buttons">
+        <img src="./facebook.png" alt="Facebook" />
+        <img src="./google.png" alt="Google" />
+      </div>
+
+      <p class="text-info">
+        Pas encore inscrit ? <a href="#" class="signup-link">S'inscrire</a>
+      </p>
+    </div>
+    
+  </body>
+</html>
