@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const bgMusic = document.getElementById("bgMusic");
 
   let scene, camera, renderer, loader, model;
-  let selectedCharacter = "the_thing";
+  
   importMenu();
 
   function initThree() {
@@ -113,11 +113,30 @@ document.addEventListener("DOMContentLoaded", () => {
   loadModel("public/models/kang6.glb");
   characterSlots.forEach((slot, index) => {
     slot.addEventListener("click", () => {
-      selectedCharacter = modelKeys[index]; // ✅ Met à jour le personnage sélectionné
+      let selectedCharacter = modelKeys[index]; // ✅ Met à jour le personnage sélectionné
       localStorage.setItem("selectedCharacter", selectedCharacter); // ✅ Stocke la valeur
       console.log("Personnage sélectionné et stocké :", selectedCharacter);
   
       loadModel(modelPaths[index]); // ✅ Charge le bon modèle
+      const userId = localStorage.getItem("user_id"); // Récupère l'ID utilisateur
+
+      fetch("http://localhost/MARVELRUNNER/select_character.php?user_id="+ localStorage.getItem("user_id"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id: userId  || 1,  // ⚠ Remplace par l'ID réel de l'utilisateur (session, localStorage, etc.)
+          character_name: selectedCharacter
+        })
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log("Réponse brute du serveur :", data); // 🔍 Affiche ce que PHP renvoie
+        let jsonData = JSON.parse(data); // Convertir en JSON après vérification
+        console.log("Données JSON :", jsonData);
+      })
+      .catch(error => console.error("Erreur Fetch:", error));
     });
   });
 });

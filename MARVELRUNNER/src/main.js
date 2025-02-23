@@ -3,6 +3,12 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 
+if (!localStorage.getItem("user_id")) {
+  console.error("❌ Aucun user_id trouvé dans localStorage !");
+  window.location.href = "logingpage.html"; // Redirige vers la connexion si l'utilisateur n'est pas connecté
+}
+
+
 document.body.style.overflow = "hidden";
 document.documentElement.style.overflow = "hidden";
 
@@ -12,33 +18,71 @@ gameMusic.volume = 0.2; // Volume de départ (ajuste si nécessaire)
 document.body.appendChild(gameMusic);
 const obstacles = [];
 const obstacleTypes = [];
+const MAX_OBSTACLES = 8;
+const obstacleSpawnCount = 1; // Nombre d'obstacles à générer à chaque intervalle
+const obstacleSpacing = 200
 const characters = {
   mme_fantastic: "public/models/mmefantastic.glb",
   the_thing: "public/models/the_thingtexturedno_rig.glb",
   human_torch: "public/models/Humantorch.glb",
   mr_kang: "public/models/kang6.glb",
 };
+let flameModel, portalModel, rockModel;
+
+const loader = new GLTFLoader();
+
+
+loader.load('public/models/flame.glb', (gltf) => {
+  flameModel = gltf.scene; 
+});
+
+loader.load('public/models/ObstacleShield.glb', (gltf) => {
+  portalModel = gltf.scene;
+});
+
+loader.load('public/models/ObstacleDisque.glb', (gltf) => {
+  rockModel = gltf.scene;
+  rockModel.rotation.x = Math.PI / 2;
+});
 
 
 window.onload = function() {
-  let selectedCharacter = localStorage.getItem("selectedCharacter");
+  let selectedCharacter = localStorage.getItem("selectedCharacter") || "the_thing"; // Défaut au cas où fetch échoue
+  localStorage.setItem("selectedCharacter", selectedCharacter);
+    console.log("Personnage sélectionné :", selectedCharacter);
+  fetch("http://localhost/MARVELRUNNER/get_character.php?user_id="+ localStorage.getItem("user_id")) // ⚠ Remplace 1 par l'ID réel
+  .then(response => response.json()) // 🔍 Voir si c'est bien JSON ou une erreur
+  .then(data => {
+    console.log("Réponse brute  :", data);
+    if (!data.character_name) {
+      console.error("❌ Erreur : Aucun personnage trouvé !");
+      return; // Arrête ici si le personnage est manquant
+    }
 
-  console.log("Personnage chargé depuis localStorage :", selectedCharacter); // DEBUG
+    let selectedCharacter = data.character_name;
+    localStorage.setItem("selectedCharacter", selectedCharacter);
+    console.log("✅ Personnage sélectionné :", selectedCharacter);
+
+    // Vérification avant d'appeler initGame()
+    if (!selectedCharacter) {
+      console.error("❌ Erreur : selectedCharacter est undefined !");
+      return;
+    }
+
+    initGame(selectedCharacter); // ✅ Appeler ici après le fetch
+  })
+  .catch(error => {
+    console.error("Erreur Fetch:", error);
+    initGame(selectedCharacter); // ⚠ Lance le jeu même si le fetch échoue
+  });
  
-  
-
-  // Vérification : Si la clé est invalide, on charge "the_thing" par défaut
-  if (!selectedCharacter || !characters[selectedCharacter]) {
-    console.error("Erreur: Personnage invalide, chargement de 'the_thing' par défaut.");
-    selectedCharacter = "the_thing";
-  }
-
-  console.log("Personnage final chargé :", selectedCharacter); // DEBUG
-  initGame(selectedCharacter);
+    initGame(selectedCharacter);
   
   gameMusic.play().catch(error => console.log("Lecture automatique bloquée :", error));
   
 };
+
+
 
 function initGame(selectedCharacter) {
   
@@ -405,20 +449,7 @@ function updateCharacterHitbox() {
 }
 
 
-let flameModel, portalModel, rockModel;
 
-loader.load('public/models/flame.glb', (gltf) => {
-  flameModel = gltf.scene; 
-});
-
-loader.load('public/models/ObstacleShield.glb', (gltf) => {
-  portalModel = gltf.scene;
-});
-
-loader.load('public/models/ObstacleDisque.glb', (gltf) => {
-  rockModel = gltf.scene;
-  rockModel.rotation.x = Math.PI / 2;
-});
 
 // Enlever les barres de scroll de la page
 window.addEventListener('load', () => {
@@ -501,9 +532,7 @@ function createObstacle(type, zPos, lane) {
 }
 
 // Paramètres pour le spawn des obstacles
-const MAX_OBSTACLES = 8;
-const obstacleSpawnCount = 1; // Nombre d'obstacles à générer à chaque intervalle
-const obstacleSpacing = 200; // Distance minimale entre les obstacles
+; // Distance minimale entre les obstacles
 
 function createObstacles() {
   if (obstacles.length >= MAX_OBSTACLES) return;
