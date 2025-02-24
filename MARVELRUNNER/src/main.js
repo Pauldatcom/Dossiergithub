@@ -1,20 +1,20 @@
-// Fantastic Four Runner Prototype with Video Background and Advanced Obstacles
+
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 
 if (!localStorage.getItem("user_id")) {
   console.error("❌ Aucun user_id trouvé dans localStorage !");
-  window.location.href = "logingpage.html"; // Redirige vers la connexion si l'utilisateur n'est pas connecté
+  window.location.href = "logingpage.html"; 
 }
 
 
 document.body.style.overflow = "hidden";
 document.documentElement.style.overflow = "hidden";
 
-const gameMusic = new Audio("public/sounds/CONVERSATION.mp3"); // Remplace par ton fichier
-gameMusic.loop = true; // La musique tourne en boucle
-gameMusic.volume = 0.2; // Volume de départ (ajuste si nécessaire)
+const gameMusic = new Audio("public/sounds/CONVERSATION.mp3"); 
+gameMusic.loop = true; 
+gameMusic.volume = 0.2; 
 document.body.appendChild(gameMusic);
 const obstacles = [];
 const obstacleTypes = [];
@@ -158,7 +158,7 @@ showGameTips(scene);
 const leftWall = new THREE.Mesh(wallGeometry, wallShaderMaterial);
 const rightWall = new THREE.Mesh(wallGeometry, wallShaderMaterial);
 
-leftWall.position.set(-12, 5, 0); // Ajuste à ta piste
+leftWall.position.set(-12, 5, 0); 
 rightWall.position.set(12, 5, 0);
 
 scene.add(leftWall);
@@ -203,7 +203,7 @@ scene.add(rightWall);
   let powerAvailable = true;
   let powerActive = false;
 
-  // Création du conteneur de l'indicateur de pouvoir
+  
 const powerIndicator = document.createElement("div");
 powerIndicator.style.position = "absolute";
 powerIndicator.style.left = "20px";
@@ -211,19 +211,19 @@ powerIndicator.style.top = "100px";
 powerIndicator.style.width = "50px";
 powerIndicator.style.height = "50px";
 powerIndicator.style.borderRadius = "50%";
-powerIndicator.style.background = "red"; // Commence en red car le pouvoir est indisponible
+powerIndicator.style.background = "red"; 
 powerIndicator.style.border = "3px solid white";
 powerIndicator.style.boxShadow = "0 0 10px rgba(255, 255, 255, 0.8)";
 document.body.appendChild(powerIndicator);
 
-// Fonction pour mettre à jour l'indicateur
+
 function updatePowerIndicator(available) {
   powerIndicator.style.background = available ? "green" : "red";
 }
 
 setTimeout(() => {
   powerAvailable = true;
-  updatePowerIndicator(true); // Passe en vert après 30 sec
+  updatePowerIndicator(true); 
 }, 30000);
 
 
@@ -239,12 +239,12 @@ window.addEventListener('keydown', (e) => {
 
     setTimeout(() => { 
       powerActive = false; 
-    }, 15000); // Pouvoir dure 15 secondes
+    }, 15000); 
 
     setTimeout(() => { 
       powerAvailable = true; 
       updatePowerIndicator(true); // Passe en vert quand le pouvoir est prêt
-    }, 30000); // Recharge de 30 secondes
+    }, 30000); 
   }
 });
   
@@ -254,8 +254,8 @@ window.addEventListener('keydown', (e) => {
       powerActive = true;
       powerAvailable = false;
       activatePower();
-      setTimeout(() => { powerActive = false; }, 15000); // Pouvoir de 15 secondes
-      setTimeout(() => { powerAvailable = true; }, 30000); // Recharge de 30 secondes
+      setTimeout(() => { powerActive = false; }, 15000);
+      setTimeout(() => { powerAvailable = true; }, 30000); 
     }
   });
 
@@ -272,7 +272,7 @@ window.addEventListener('keydown', (e) => {
       character.visible = true;      // Remet visible
       character.userData.invincible = false;
       console.log('Pouvoir terminé');
-  }, 15000); // Pouvoir pendant 15 secondes
+  }, 15000); 
 }
 
 let gameOverElement;
@@ -294,7 +294,7 @@ function showGameOver() {
   gameOverElement.style.flexDirection = "column";
   gameOverElement.style.alignItems = "center";
   gameOverElement.style.justifyContent = "center";
-  gameOverElement.style.opacity = "0"; // Apparition immédiate
+  gameOverElement.style.opacity = "0"; 
   gameOverElement.style.transition = "opacity 2s ease-in-out";
   gameOverElement.style.zIndex = "9999";
 
@@ -303,19 +303,19 @@ function showGameOver() {
   gameOverText.style.fontSize = "80px";
   gameOverText.style.fontWeight = "bold";
   gameOverText.style.color = "red";
-  gameOverText.style.fontFamily = "'Press Start 2P', sans-serif"; // Police type rétro
+  gameOverText.style.fontFamily = "'Press Start 2P', sans-serif"; 
   gameOverText.style.textShadow = "0 0 10px crimson, 0 0 10px darkred, 0 0 10px red";
   gameOverText.style.animation = "shake 1.5s ease-in-out infinite alternate";
-  gameOverText.style.marginBottom = "80px"; // Espacement augmenté pour que les boutons soient bien en dessous
+  gameOverText.style.marginBottom = "80px"; 
     // Conteneur des boutons
     const buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
     buttonContainer.style.flexDirection = "column";
-    buttonContainer.style.alignItems = "center"; // Centrage horizontal
+    buttonContainer.style.alignItems = "center"; 
     buttonContainer.style.gap = "20px";
     buttonContainer.style.marginTop = "20px";
   
-    // Bouton "Recommencer"
+    
     const restartButton = document.createElement("button");
     restartButton.innerText = "Recommencer";
     restartButton.style.padding = "15px 30px";
@@ -330,7 +330,7 @@ function showGameOver() {
     restartButton.onmouseout = () => restartButton.style.background = "crimson";
     restartButton.onclick = restartGame;
   
-    // Bouton "Quitter"
+    
     const quitButton = document.createElement("button");
     quitButton.innerText = "Quitter";
     quitButton.style.padding = "15px 30px";
@@ -343,7 +343,7 @@ function showGameOver() {
     quitButton.style.transition = "0.3s";
     quitButton.onmouseover = () => quitButton.style.background = "darkgray";
     quitButton.onmouseout = () => quitButton.style.background = "gray";
-    quitButton.onclick = () => window.location.href = "launcher.html"; // Redirection au menu de sélection
+    quitButton.onclick = () => window.location.href = "launcher.html"; 
   
     buttonContainer.appendChild(restartButton);
     buttonContainer.appendChild(quitButton);
@@ -374,8 +374,8 @@ function showGameOver() {
 
 
 const collisionSound = new Audio('public/sounds/songcollision1.mp3');
-collisionSound.volume = 0.7;  // Volume à 70%
-// Collision Detection
+collisionSound.volume = 0.7;  
+
 function checkCollision(obstacle) {
   if (character.userData.invincible) return false;
   const boxB = new THREE.Box3().setFromObject(obstacle);
@@ -422,14 +422,14 @@ loaderCharacter.load(characters[selectedCharacter], (gltf) => {
   scene.add(character);
 
   // On définit la taille désirée pour la hitbox (largeur, hauteur, profondeur)
-  const hitboxSize = new THREE.Vector3(1, 1.5, 1); // Ajuste ces valeurs selon ton modèle
+  const hitboxSize = new THREE.Vector3(1, 1.5, 1); 
   // On positionne la hitbox de façon à couvrir le bas du personnage (ajustement vertical)
   characterHitbox.setFromCenterAndSize(
     character.position.clone().add(new THREE.Vector3(0, hitboxSize.y / 2, 0)),
     hitboxSize
   );
   if (selectedCharacter === "mr_kang") {
-    character.rotation.y = Math.PI * 2; // Tourne Kang dans l'autre sens
+    character.rotation.y = Math.PI * 2; 
   }
 });
 
@@ -438,9 +438,9 @@ let characterHitbox = new THREE.Box3();
 
 function updateCharacterHitbox() {
   if (character) {
-    // On récupère la taille actuelle (si jamais tu veux la changer dynamiquement)
+    
     const hitboxSize = characterHitbox.getSize(new THREE.Vector3());
-    // On repositionne la hitbox au centre du personnage, en ajoutant une offset verticale
+   
     characterHitbox.setFromCenterAndSize(
       character.position.clone().add(new THREE.Vector3(0, hitboxSize.y / 2, 0)),
       hitboxSize
@@ -456,7 +456,7 @@ window.addEventListener('load', () => {
   document.body.style.overflow = 'hidden';
 });
 
-// Keyboard Controls without Camera Movement
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" && characterLane > 0) {
     characterLane--;
@@ -494,7 +494,7 @@ function increaseSpeed() {
   if (score % 1500 === 0) gameSpeed += 0.1; 
 }
 
-// Obstacle Management (Flames, Portals, Rocks)
+
 const laneObstacles = {
   [-8]:'rock',
   [0]:'flame',
@@ -531,8 +531,7 @@ function createObstacle(type, zPos, lane) {
   }
 }
 
-// Paramètres pour le spawn des obstacles
-; // Distance minimale entre les obstacles
+
 
 function createObstacles() {
   if (obstacles.length >= MAX_OBSTACLES) return;
@@ -598,7 +597,7 @@ function restartGame() {
     scoreElement.innerText = `Score: ${score}`;
     character.position.set(0, 1, 5);
     
-    // Supprimer les obstacles de la scène et vider le tableau
+    
     obstacles.forEach((obstacle) => {
       scene.remove(obstacle);
     });
@@ -606,20 +605,20 @@ function restartGame() {
     
     isGameOver = false;
     
-    // Redémarrer l'intervalle de création des obstacles
+    
     obstacleInterval = setInterval(createObstacles, 2000);
     
     animate();
   }
 }
 
-// Listen for restart key
+
 window.addEventListener("keydown", restartGame);
 
 
 
 
-// Suppression de l'ancien conteneur UI et création d'un nouveau à gauche
+
 const uiContainer = document.createElement("div");
 uiContainer.style.position = "absolute";
 uiContainer.style.left = "20px";

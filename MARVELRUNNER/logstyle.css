@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 body {
-  background: url(./Fantastic\ Four.\ The\ scene\ includes\ a\ deep\ space\ environment\ with\ vibrant\ nebula.webp) center / contain no-repeat fixed;
+  background: url(public/img/fantasticfour.webp) center / contain no-repeat fixed;
   font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
