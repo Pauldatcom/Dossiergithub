@@ -1,6 +1,7 @@
-// Fantastic Four Runner Prototype with Video Background and Advanced Obstacles
+import { setupUI } from "./ui.js";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 
 
 if (!localStorage.getItem("user_id")) {
@@ -28,6 +29,8 @@ const characters = {
   mr_kang: "public/models/kang6.glb",
 };
 let flameModel, portalModel, rockModel;
+ let animationId; // Déclaration globale de l'animation
+ let isPaused = false;
 
 const loader = new GLTFLoader();
 
@@ -84,7 +87,7 @@ window.onload = function() {
 
 
 function initGame(selectedCharacter) {
-  
+  console.log("🚀 Début de initGame - isPaused =", isPaused);
   
   const scene = new THREE.Scene();
   function showGameTips(scene) {
@@ -275,9 +278,11 @@ window.addEventListener('keydown', (e) => {
   }, 15000); // Pouvoir pendant 15 secondes
 }
 
+
+let obstacleInterval = setInterval(createObstacles, 2000);
 let gameOverElement;
 let isGameOver = false;
-let obstacleInterval = setInterval(createObstacles, 2000);
+
 
 // Game Over Display
 function showGameOver() {
@@ -617,252 +622,254 @@ function restartGame() {
 // Listen for restart key
 window.addEventListener("keydown", restartGame);
 
+const { scoreElement, bestScoreElement, updateScoreDisplay, checkBestScore } = setupUI(gameMusic, animate, () => isPaused = true, () => isPaused = false);
+
 
 
 
 // Suppression de l'ancien conteneur UI et création d'un nouveau à gauche
-const uiContainer = document.createElement("div");
-uiContainer.style.position = "absolute";
-uiContainer.style.left = "20px";
-uiContainer.style.bottom = "20px";
-uiContainer.style.display = "flex";
-uiContainer.style.display = "grid";
-uiContainer.style.gridTemplateAreas = `
-  ".  P  ."
-  ". up ."
-  "left . right"
-  ". down ."
-`;
-uiContainer.style.gap = "5px";
-// uiContainer.style.flexDirection = "column"; // Empile les boutons verticalement
-// uiContainer.style.justifyContent = "center"; // Centre verticalement
-// uiContainer.style.alignItems = "center";     // Centre horizontalement
-uiContainer.style.gap = "15px";
-document.body.appendChild(uiContainer);
+// const uiContainer = document.createElement("div");
+// uiContainer.style.position = "absolute";
+// uiContainer.style.left = "20px";
+// uiContainer.style.bottom = "20px";
+// uiContainer.style.display = "flex";
+// uiContainer.style.display = "grid";
+// uiContainer.style.gridTemplateAreas = `
+//   ".  P  ."
+//   ". up ."
+//   "left . right"
+//   ". down ."
+// `;
+// uiContainer.style.gap = "5px";
+// // uiContainer.style.flexDirection = "column"; // Empile les boutons verticalement
+// // uiContainer.style.justifyContent = "center"; // Centre verticalement
+// // uiContainer.style.alignItems = "center";     // Centre horizontalement
+// uiContainer.style.gap = "15px";
+// document.body.appendChild(uiContainer);
 
 
-// Fonction pour créer des boutons interactifs
-function createButton(iconPath, action) {
-  const button = document.createElement("div");
-  button.style.width = "80px";
-  button.style.height = "80px";
-  button.style.display = "flex";
-  button.style.alignItems = "center";
-  button.style.justifyContent = "center";
-  button.style.cursor = "pointer";
+// // Fonction pour créer des boutons interactifs
+// function createButton(iconPath, action) {
+//   const button = document.createElement("div");
+//   button.style.width = "80px";
+//   button.style.height = "80px";
+//   button.style.display = "flex";
+//   button.style.alignItems = "center";
+//   button.style.justifyContent = "center";
+//   button.style.cursor = "pointer";
 
-  const iconButton = document.createElement("img");
-  iconButton.src = iconPath;
-  iconButton.style.width = "50px";
-  iconButton.style.height = "50px";
+//   const iconButton = document.createElement("img");
+//   iconButton.src = iconPath;
+//   iconButton.style.width = "50px";
+//   iconButton.style.height = "50px";
 
-  button.appendChild(iconButton);
-    uiContainer.appendChild(button);
-    return button;
-}
+//   button.appendChild(iconButton);
+//     uiContainer.appendChild(button);
+//     return button;
+// }
 
-// Simuler les actions du jeu
-function moveLeft() { console.log("Déplacement à gauche"); }
-function moveRight() { console.log("Déplacement à droite"); }
-function jump() { console.log("Saut"); }
-function down(){}
-
-
+// // Simuler les actions du jeu
+// function moveLeft() { console.log("Déplacement à gauche"); }
+// function moveRight() { console.log("Déplacement à droite"); }
+// function jump() { console.log("Saut"); }
+// function down(){}
 
 
-// Ajout des boutons
-const leftButton = createButton("public/icons/arrow-left-line.svg", moveLeft);
-const rightButton = createButton("public/icons/arrow-right-line.svg", moveRight);
-const upButton = createButton("public/icons/arrow-up-line.svg", jump);
-const downButton = createButton("public/icons/arrow-down-line.svg", down,);
 
 
-leftButton.style.gridArea = "left";
-rightButton.style.gridArea = "right";
-upButton.style.gridArea = "up";
-downButton.style.gridArea = "down";
+// // Ajout des boutons
+// const leftButton = createButton("public/icons/arrow-left-line.svg", moveLeft);
+// const rightButton = createButton("public/icons/arrow-right-line.svg", moveRight);
+// const upButton = createButton("public/icons/arrow-up-line.svg", jump);
+// const downButton = createButton("public/icons/arrow-down-line.svg", down,);
+
+
+// leftButton.style.gridArea = "left";
+// rightButton.style.gridArea = "right";
+// upButton.style.gridArea = "up";
+// downButton.style.gridArea = "down";
 
 // createButton("P", ActivatePower);
 
 // Ajout du titre
-const gameTitle = document.createElement("div");
-gameTitle.innerText = "ESCAPE FROM KANG";
-gameTitle.style.position = "absolute";
-gameTitle.style.top = "30%";
-gameTitle.style.left = "20px";
-gameTitle.style.transform = "translateY(-50%)";
-gameTitle.style.fontSize = "40px";
-gameTitle.style.color = "#00ffff";
-gameTitle.style.fontFamily = "Marvel, sans-serif";
-gameTitle.style.textTransform = "uppercase";
-gameTitle.style.textShadow = "3px 3px 15px rgba(0, 255, 255, 0.9)";
-document.body.appendChild(gameTitle);
+// const gameTitle = document.createElement("div");
+// gameTitle.innerText = "ESCAPE FROM KANG";
+// gameTitle.style.position = "absolute";
+// gameTitle.style.top = "30%";
+// gameTitle.style.left = "20px";
+// gameTitle.style.transform = "translateY(-50%)";
+// gameTitle.style.fontSize = "40px";
+// gameTitle.style.color = "#00ffff";
+// gameTitle.style.fontFamily = "Marvel, sans-serif";
+// gameTitle.style.textTransform = "uppercase";
+// gameTitle.style.textShadow = "3px 3px 15px rgba(0, 255, 255, 0.9)";
+// document.body.appendChild(gameTitle);
 
-let bestScore = localStorage.getItem("bestScore") || 0;
-let score = 0;
+// let bestScore = localStorage.getItem("bestScore") || 0;
+// let score = 0;
 
-// Création de l'affichage du score
-const scoreElement = document.createElement("div");
-scoreElement.style.position = "absolute";
-scoreElement.style.top = "20px";
-scoreElement.style.left = "50%";
-scoreElement.style.transform = "translateX(-50%)";
-scoreElement.style.color = "#ffffff";
-scoreElement.style.fontSize = "24px";
-scoreElement.style.fontWeight = "bold";
-scoreElement.style.fontFamily = "Marvel, sans-serif";
-document.body.appendChild(scoreElement);
+// // Création de l'affichage du score
+// const scoreElement = document.createElement("div");
+// scoreElement.style.position = "absolute";
+// scoreElement.style.top = "20px";
+// scoreElement.style.left = "50%";
+// scoreElement.style.transform = "translateX(-50%)";
+// scoreElement.style.color = "#ffffff";
+// scoreElement.style.fontSize = "24px";
+// scoreElement.style.fontWeight = "bold";
+// scoreElement.style.fontFamily = "Marvel, sans-serif";
+// document.body.appendChild(scoreElement);
 
-// Création de l'affichage du meilleur score
-const bestScoreElement = document.createElement("div");
-bestScoreElement.style.position = "absolute";
-bestScoreElement.style.top = "50px";
-bestScoreElement.style.left = "50%";
-bestScoreElement.style.transform = "translateX(-50%)";
-bestScoreElement.style.color = "gold";
-bestScoreElement.style.fontSize = "22px";
-bestScoreElement.style.fontWeight = "bold";
-bestScoreElement.style.fontFamily = "Marvel, sans-serif";
-document.body.appendChild(bestScoreElement);
+// // Création de l'affichage du meilleur score
+// const bestScoreElement = document.createElement("div");
+// bestScoreElement.style.position = "absolute";
+// bestScoreElement.style.top = "50px";
+// bestScoreElement.style.left = "50%";
+// bestScoreElement.style.transform = "translateX(-50%)";
+// bestScoreElement.style.color = "gold";
+// bestScoreElement.style.fontSize = "22px";
+// bestScoreElement.style.fontWeight = "bold";
+// bestScoreElement.style.fontFamily = "Marvel, sans-serif";
+// document.body.appendChild(bestScoreElement);
 
-// Mise à jour de l'affichage
-function updateScoreDisplay() {
-  scoreElement.innerText = `Score: ${score}`;
-  bestScoreElement.innerText = `Meilleur Score: ${bestScore}`;
-}
+// // Mise à jour de l'affichage
+// function updateScoreDisplay() {
+//   scoreElement.innerText = `Score: ${score}`;
+//   bestScoreElement.innerText = `Meilleur Score: ${bestScore}`;
+// }
 
-// Vérifie et met à jour le meilleur score
-function checkBestScore() {
-  if (score > bestScore) {
-    bestScore = score;
-    localStorage.setItem("bestScore", bestScore); // Sauvegarde le meilleur score
-  }
-}
+// // Vérifie et met à jour le meilleur score
+// function checkBestScore() {
+//   if (score > bestScore) {
+//     bestScore = score;
+//     localStorage.setItem("bestScore", bestScore); // Sauvegarde le meilleur score
+//   }
+// }
 
-const menuIcon = document.createElement("img");
-menuIcon.src = "public/icons/settings.svg";  // Chemin vers ton icône
-menuIcon.style.width = "40px";
-menuIcon.style.height = "40px";
-menuIcon.style.position = "absolute";
-menuIcon.style.top = "20px";
-menuIcon.style.right = "20px";
-menuIcon.style.cursor = "pointer";
-menuIcon.style.zIndex = "1000"; // Pour s'assurer qu'elle soit au-dessus
-
-
-
-
-
-
-document.body.appendChild(menuIcon);
+// const menuIcon = document.createElement("img");
+// menuIcon.src = "public/icons/settings.svg";  // Chemin vers ton icône
+// menuIcon.style.width = "40px";
+// menuIcon.style.height = "40px";
+// menuIcon.style.position = "absolute";
+// menuIcon.style.top = "20px";
+// menuIcon.style.right = "20px";
+// menuIcon.style.cursor = "pointer";
+// menuIcon.style.zIndex = "1000"; // Pour s'assurer qu'elle soit au-dessus
 
 
 
 
 
 
-
-const SettingsMenu = document.createElement("div");
-SettingsMenu.style.position = "absolute";
-SettingsMenu.style.top = "0";
-SettingsMenu.style.right = "0";
-SettingsMenu.style.width = "250px";
-SettingsMenu.style.height = "100%";
-SettingsMenu.style.display = "flex";
-SettingsMenu.style.flexDirection = "column";
-SettingsMenu.style.alignItems = "center";
-SettingsMenu.style.justifyContent = "center";
-SettingsMenu.style.gap = "20px";
-SettingsMenu.style.boxShadow = "5px 0 15px rgba(0,0,0,0.5)";
-SettingsMenu.style.display = "none"; // Caché au départ
-SettingsMenu.style.zIndex = "999"; // Juste sous l'icône
+// document.body.appendChild(menuIcon);
 
 
 
-document.body.appendChild(SettingsMenu);
 
 
 
-const resumeButton = document.createElement("button")
 
-resumeButton.innerText = "Reprendre";
-resumeButton.style.padding = "10px 20px";
-resumeButton.style.fontSize = "18px";
+// const SettingsMenu = document.createElement("div");
+// SettingsMenu.style.position = "absolute";
+// SettingsMenu.style.top = "0";
+// SettingsMenu.style.right = "0";
+// SettingsMenu.style.width = "250px";
+// SettingsMenu.style.height = "100%";
+// SettingsMenu.style.display = "flex";
+// SettingsMenu.style.flexDirection = "column";
+// SettingsMenu.style.alignItems = "center";
+// SettingsMenu.style.justifyContent = "center";
+// SettingsMenu.style.gap = "20px";
+// SettingsMenu.style.boxShadow = "5px 0 15px rgba(0,0,0,0.5)";
+// SettingsMenu.style.display = "none"; // Caché au départ
+// SettingsMenu.style.zIndex = "999"; // Juste sous l'icône
 
 
-resumeButton.addEventListener("click", () => {
-  SettingsMenu.style.display = "none"; // Cache le menu
-  animate(); // Relance l'animation du jeu
-});
 
-const startMusicButton = document.createElement("button");
-startMusicButton.innerText = "Activer la musique";
-startMusicButton.style.padding = "10px 20px";
-startMusicButton.style.fontSize = "18px";
+// document.body.appendChild(SettingsMenu);
 
-startMusicButton.addEventListener("click", () => {
-  gameMusic.play().then(() => {
-    console.log("Musique de jeu activée !");
-    startMusicButton.style.display = "none"; // Cache le bouton après activation
-  }).catch(error => console.error("Erreur de lecture automatique :", error));
-});
 
-SettingsMenu.appendChild(startMusicButton);
 
-const muteButton = document.createElement("button");
-muteButton.innerText = "Couper la musique";
-muteButton.style.padding = "10px 20px";
-muteButton.style.fontSize = "18px";
-muteButton.addEventListener("click", () => {
-  gameMusic.muted = !gameMusic.muted;
-  muteButton.innerText = gameMusic.muted ? "Activer la musique" : "Couper la musique";
-});
-SettingsMenu.appendChild(muteButton);
+// const resumeButton = document.createElement("button")
 
-const volumeSlider = document.createElement("input");
-volumeSlider.type = "range";
-volumeSlider.min = "0";
-volumeSlider.max = "1";
-volumeSlider.step = "0.01";
-volumeSlider.value = gameMusic.volume;
+// resumeButton.innerText = "Reprendre";
+// resumeButton.style.padding = "10px 20px";
+// resumeButton.style.fontSize = "18px";
 
-volumeSlider.addEventListener("input", (e) => {
-  gameMusic.volume = e.target.value;
-});
 
-SettingsMenu.appendChild(volumeSlider);
+// resumeButton.addEventListener("click", () => {
+//   SettingsMenu.style.display = "none"; // Cache le menu
+//   animate(); // Relance l'animation du jeu
+// });
 
-const quitButton = document.createElement("button");
-quitButton.innerText = "Quitter";
-quitButton.style.padding = "10px 20px";
-quitButton.style.fontSize = "18px";
-quitButton.addEventListener("click", () => {
-  window.location.href = "selectionCharater.html"; // Recharge la page pour revenir au menu principal
-});
+// const startMusicButton = document.createElement("button");
+// startMusicButton.innerText = "Activer la musique";
+// startMusicButton.style.padding = "10px 20px";
+// startMusicButton.style.fontSize = "18px";
 
-// Ajouter les boutons au menu
-SettingsMenu.appendChild(resumeButton);
-SettingsMenu.appendChild(muteButton);
-SettingsMenu.appendChild(quitButton);
+// startMusicButton.addEventListener("click", () => {
+//   gameMusic.play().then(() => {
+//     console.log("Musique de jeu activée !");
+//     startMusicButton.style.display = "none"; // Cache le bouton après activation
+//   }).catch(error => console.error("Erreur de lecture automatique :", error));
+// });
 
-let animationId; // Déclaration globale de l'animation
+// SettingsMenu.appendChild(startMusicButton);
 
-// Vérifie si la fonction animate existe
-if (typeof animate === 'undefined') {
-  function animate() {
-    animationId = requestAnimationFrame(animate);
-    // Ajoute ici les appels nécessaires pour le rendu du jeu
-  }
-}
+// const muteButton = document.createElement("button");
+// muteButton.innerText = "Couper la musique";
+// muteButton.style.padding = "10px 20px";
+// muteButton.style.fontSize = "18px";
+// muteButton.addEventListener("click", () => {
+//   gameMusic.muted = !gameMusic.muted;
+//   muteButton.innerText = gameMusic.muted ? "Activer la musique" : "Couper la musique";
+// });
+// SettingsMenu.appendChild(muteButton);
 
-menuIcon.addEventListener("click", () => {
-  SettingsMenu.style.display = SettingsMenu.style.display === "none" ? "flex" : "none";
-  if (SettingsMenu.style.display === "flex") {
-    cancelAnimationFrame(animationId); // Met le jeu en pause
-  } else {
-    animate(); // Relance l'animation si on ferme le menu
-  }
-});
+// const volumeSlider = document.createElement("input");
+// volumeSlider.type = "range";
+// volumeSlider.min = "0";
+// volumeSlider.max = "1";
+// volumeSlider.step = "0.01";
+// volumeSlider.value = gameMusic.volume;
+
+// volumeSlider.addEventListener("input", (e) => {
+//   gameMusic.volume = e.target.value;
+// });
+
+// SettingsMenu.appendChild(volumeSlider);
+
+// const quitButton = document.createElement("button");
+// quitButton.innerText = "Quitter";
+// quitButton.style.padding = "10px 20px";
+// quitButton.style.fontSize = "18px";
+// quitButton.addEventListener("click", () => {
+//   window.location.href = "selectionCharater.html"; // Recharge la page pour revenir au menu principal
+// });
+
+// // Ajouter les boutons au menu
+// SettingsMenu.appendChild(resumeButton);
+// SettingsMenu.appendChild(muteButton);
+// SettingsMenu.appendChild(quitButton);
+
+
+
+// // Vérifie si la fonction animate existe
+// if (typeof animate === 'undefined') {
+//   function animate() {
+//     animationId = requestAnimationFrame(animate);
+//     // Ajoute ici les appels nécessaires pour le rendu du jeu
+//   }
+// }
+
+// menuIcon.addEventListener("click", () => {
+//   SettingsMenu.style.display = SettingsMenu.style.display === "none" ? "flex" : "none";
+//   if (SettingsMenu.style.display === "flex") {
+//     cancelAnimationFrame(animationId); // Met le jeu en pause
+//   } else {
+//     animate(); // Relance l'animation si on ferme le menu
+//   }
+// });
 
 function animateWalls() {
   wallShaderMaterial.uniforms.time.value += 0.05;
@@ -872,6 +879,8 @@ animateWalls();
 
 
 function animate() {
+  if (isPaused) return;
+  // console.log("🎮 Animation en cours...");
   animationId = requestAnimationFrame(animate);
   handleJump();
   handleObstacles();
