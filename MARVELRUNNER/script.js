@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const modelContainer = document.getElementById("model-container");
   const characterSlots = document.querySelectorAll(".character-slot");
@@ -20,12 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
       0.1,
       1000
     );
-    // Powerful directional light 
+    // Lumière directionnelle puissante (simule le soleil)
     const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    // Ambient light to soften shadows
+    // Lumière ambiante pour adoucir les ombres
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
     scene.add(ambientLight);
     camera.position.set(0, 2, 10);
@@ -61,12 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
         
         model.traverse((child) => {
           if (child.isMesh) {
-            child.material.side = THREE.DoubleSide; // Allows you to display both sides of surfaces
-            child.material.needsUpdate = true; 
-            console.log("Matériau appliqué :", child.material);
+            child.material.side = THREE.DoubleSide; // Permet d'afficher les deux côtés des surfaces
+            child.material.needsUpdate = true; // Met à jour le rendu
           }
         });
-        const scaleFactor = 3 / size; 
+        const scaleFactor = 3 / size; // Réduit l’échelle à une taille raisonnable
         // model.scale.set(scaleFactor, scaleFactor, scaleFactor);
         // const center = box.getCenter(new THREE.Vector3());
         // model.position.sub(center);
@@ -113,27 +113,28 @@ document.addEventListener("DOMContentLoaded", () => {
   loadModel("public/models/kang6.glb");
   characterSlots.forEach((slot, index) => {
     slot.addEventListener("click", () => {
-      let selectedCharacter = modelKeys[index]; 
-      localStorage.setItem("selectedCharacter", selectedCharacter);
+      let selectedCharacter = modelKeys[index]; // ✅ Met à jour le personnage sélectionné
+      localStorage.setItem("selectedCharacter", selectedCharacter); // ✅ Stocke la valeur
       console.log("Personnage sélectionné et stocké :", selectedCharacter);
+      
   
-      loadModel(modelPaths[index]); 
-      const userId = localStorage.getItem("user_id"); 
+      loadModel(modelPaths[index]); // ✅ Charge le bon modèle
+      const userId = localStorage.getItem("user_id"); // Récupère l'ID utilisateur
 
-      fetch("http://localhost/MARVELRUNNER/select_character.php?user_id="+ localStorage.getItem("user_id"), {
+      fetch("http://localhost/MARVELRUNNER/select_character.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          user_id: userId  || 1,  // ⚠ Remplace par l'ID réel de l'utilisateur (session, localStorage, etc.)
+          user_id: localStorage.getItem("user_id"), // ⚠ Remplace par l'ID réel de l'utilisateur (session, localStorage, etc.)
           character_name: selectedCharacter
         })
       })
       .then(response => response.text())
       .then(data => {
-        console.log("Réponse brute du serveur :", data);
-        let jsonData = JSON.parse(data); 
+        console.log("Réponse brute du serveur :", data); // 🔍 Affiche ce que PHP renvoie
+        let jsonData = JSON.parse(data); // Convertir en JSON après vérification
         console.log("Données JSON :", jsonData);
       })
       .catch(error => console.error("Erreur Fetch:", error));
@@ -209,19 +210,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const playButton = document.getElementById("playButton");
 
   if (bgMusic) {
-    bgMusic.volume = 0.4; 
+    bgMusic.volume = 0.4; // Ajuste le volume (0.0 = muet, 1.0 = max)
   }
   if (playButton) {
     playButton.addEventListener("click", () => {
       if (bgMusic) {
-        bgMusic.pause(); 
-        bgMusic.currentTime = 0; 
+        bgMusic.pause(); // Arrête la musique
+        bgMusic.currentTime = 0; // Remet à zéro
       }
-      window.location.href = "jeu.html"; 
+      window.location.href = "jeu.html"; // Redirige vers la page du jeu
     });
   }
 });
 
 // setTimeout(() => {
-//   window.location.href = "jeu.html"; 
+//   window.location.href = "jeu.html"; // Redirection vers la page du jeu
 // }, 1000)

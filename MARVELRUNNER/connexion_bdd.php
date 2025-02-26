@@ -1,13 +1,13 @@
 <?php
-$host = "localhost"; 
-$dbname = "marvelrunner"; 
-$username = "root"; 
-$password = ""; 
+$host = "localhost";
+$user = "root"; // Vérifie l'utilisateur WAMP
+$password = ""; // Laisse vide si tu n'as pas défini de mot de passe
+$dbname = "MARVELRUNNER"; // Assure-toi que la base existe bien
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Erreur de connexion à la base de données : " . $e->getMessage());
+$conn = new mysqli($host, $user, $password, $dbname);
+
+// ✅ Vérifie la connexion
+if ($conn->connect_error) {
+    die("Échec de connexion : " . $conn->connect_error);
 }
 ?>

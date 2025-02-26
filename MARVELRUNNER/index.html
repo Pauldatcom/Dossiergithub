@@ -3,42 +3,101 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sélection des Personnages</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Connexion - Marvel 4 Fantastiques</title>
+    <link rel="stylesheet" href="logstyle.css" />
   </head>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginButton = document.querySelector(".btn");
+
+loginButton.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const email = document.querySelector("input[type='email']").value;
+    const password = document.querySelector("input[type='password']").value;
+
+    if (!email || !password) {
+        alert("Veuillez remplir tous les champs !");
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost/MARVELRUNNER/login.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+        console.log("Réponse du serveur :", data);
+
+        if (data.user_id) {
+            localStorage.setItem("user_id", data.user_id);
+            window.location.href = "index.html"; // Redirige vers la page du jeu
+        } else {
+            alert("Email ou mot de passe incorrect !");
+        }
+    } catch (error) {
+        console.error("Erreur Fetch:", error);
+    }
+});
+});
+  </script>
+  
   <body>
-    <h1 class="title">Sélection des Personnages</h1>
-    <div id="model-container"></div>
-
-    <button id="playButton">Jouer</button>
-
-    <div class="featured-character">
-      <img src="public/img/image2.png" alt="Personnage Sélectionné" />
+    <!-- Image d'introduction -->
+    <div id="intro-image" class="intro-image">
+      <img src="public/img/MARVELOGO.PNG" alt="Introduction" />
     </div>
 
-    <div class="character-grid">
-      <div class="character-slot" data-image="public/img/image1.png">
-        <img src="public/img/image10.png" alt="Personnage 1" />
-        <div class="character-name">Personnage 1</div>
-      </div>
-      <div class="character-slot" data-image="public/img/image2.png">
-        <img src="public/img/image9.png" alt="Personnage 2" />
-        <div class="character-name">Personnage 2</div>
-      </div>
-      <div class="character-slot" data-image="public/img/image3.PNG">
-        <img src="public/img/image8.png" alt="Personnage 3" />
-        <div class="character-name">Personnage 3</div>
-      </div>
-      <div class="character-slot" data-image="public/img/image4.jpg">
-        <img src="public/img/image11.png" alt="Personnage 4" />
-        <div class="character-name">Personnage 4</div>
+    <!-- Vidéo -->
+    <video id="video" autoplay muted preload="auto">
+      <source src="public/sounds/accueilvideo.mp4" type="video/mp4" />
+      Votre navigateur ne supporte pas la lecture de vidéos.
+    </video>
+
+    <!-- Image et boutons -->
+    <div id="image-container" class="hidden">
+      <img id="image" src="public/img/bgloging.PNG" alt="Image après la vidéo" />
+      <div class="buttons-container">
+        <a href="secondConnexion.html">
+          <button class="action-button">Connexion</button>
+        </a>
+        <a href="connexion.html">
+          <button class="action-button signup">S'inscrire</button>
+        </a>
       </div>
     </div>
-    <audio id="bgMusic" src="public/sounds/sonMarvel.mp4" loop autoplay></audio>
 
-    <script type="module" src="script.js">
-       console.log("Personnage sélectionné stocké :", localStorage.getItem("selectedCharacter"));
+    <script>
+      const introImage = document.getElementById("intro-image");
+      const video = document.getElementById("video");
+      const imageContainer = document.getElementById("image-container");
+
+      // Cacher la vidéo et l'image finale au début
+      video.style.display = "none";
+      imageContainer.style.display = "none";
+
+      // Après 3 secondes, faire disparaître l'image d'intro et démarrer la vidéo
+      setTimeout(() => {
+        introImage.classList.add("fade-out");
+
+        // Attendre la fin de l'animation de fondu
+        setTimeout(() => {
+          introImage.style.display = "none";
+          video.style.display = "block";
+          video.play().catch(function (error) {
+            console.log("La lecture automatique a échoué:", error);
+          });
+        }, 800); // Durée de l'animation de fondu
+      }, 1500); // Durée d'affichage de l'image d'intro
+
+      // Quand la vidéo se termine, afficher l'image et le bouton
+      video.addEventListener("ended", function () {
+        video.style.display = "none";
+        imageContainer.style.display = "block";
+      });
     </script>
-    
   </body>
+</html>
 </html>

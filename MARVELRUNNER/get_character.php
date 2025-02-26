@@ -14,8 +14,7 @@ if (!$user_id) {
 }
 
 try {
- // Check if character already exists in Character_selection
-
+    // Vérifier si le personnage existe déjà dans character_selection
     $stmt = $pdo->prepare("SELECT character_name FROM character_selection WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,7 +24,7 @@ try {
         exit();
     }
 
-    // no character found, we assign "the_thing" by default
+    // Aucun personnage trouvé, on attribue "the_thing" par défaut
     $defaultCharacter = "the_thing";
     $stmt = $pdo->prepare("INSERT INTO character_selection (user_id, character_name) VALUES (?, ?)");
     $stmt->execute([$user_id, $defaultCharacter]);
