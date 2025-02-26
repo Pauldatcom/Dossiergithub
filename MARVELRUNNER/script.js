@@ -119,23 +119,27 @@ document.addEventListener("DOMContentLoaded", () => {
       
   
       loadModel(modelPaths[index]); // ✅ Charge le bon modèle
-      const userId = localStorage.getItem("user_id"); // Récupère l'ID utilisateur
+      const userId = localStorage.getItem("user_id"); // ✅ Récupère user_id du localStorage
 
+      if (!userId) {
+          console.error("❌ Aucun user_id trouvé !");
+      } else {
+          console.log("✅ user_id détecté :", userId);
+      }
+      
       fetch("http://localhost/MARVELRUNNER/select_character.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          user_id: localStorage.getItem("user_id"), // ⚠ Remplace par l'ID réel de l'utilisateur (session, localStorage, etc.)
-          character_name: selectedCharacter
-        })
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, character_name: selectedCharacter }) // ✅ user_id ajouté
       })
-      .then(response => response.text())
+      .then(res => res.json())
       .then(data => {
-        console.log("Réponse brute du serveur :", data); // 🔍 Affiche ce que PHP renvoie
-        let jsonData = JSON.parse(data); // Convertir en JSON après vérification
-        console.log("Données JSON :", jsonData);
+          console.log("🔄 Réponse du serveur :", data);
+          if (data.error) {
+              console.error("❌ Erreur serveur :", data.error);
+          } else {
+              console.log("✅ Personnage enregistré avec succès !");
+          }
       })
       .catch(error => console.error("Erreur Fetch:", error));
     });

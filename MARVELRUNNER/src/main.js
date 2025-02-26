@@ -50,33 +50,32 @@ window.onload = function() {
   let selectedCharacter = localStorage.getItem("selectedCharacter") || "the_thing"; // Défaut au cas où fetch échoue
   localStorage.setItem("selectedCharacter", selectedCharacter);
     console.log("Personnage sélectionné :", selectedCharacter);
-  fetch("http://localhost/MARVELRUNNER/get_character.php?user_id="+ localStorage.getItem("user_id")) // ⚠ Remplace 1 par l'ID réel
-  .then(response => response.json()) // 🔍 Voir si c'est bien JSON ou une erreur
-  .then(data => {
-    console.log("Réponse brute  :", data);
-    if (!data.character_name) {
-      console.error("❌ Erreur : Aucun personnage trouvé !");
-      return; // Arrête ici si le personnage est manquant
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+        console.error("❌ Aucun user_id trouvé, redirection vers la connexion...");
+        window.location.href = "secondConnexion.html";
+    } else {
+        fetch(`http://localhost/MARVELRUNNER/get_character.php?user_id=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Réponse du serveur :", data);
+            if (data.error) {
+                console.error("❌ Erreur : " + data.error);
+            } else {
+                let selectedCharacter = data.character_name;
+                localStorage.setItem("selectedCharacter", selectedCharacter);
+                console.log("✅ Personnage sélectionné :", selectedCharacter);
+                initGame(selectedCharacter);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur Fetch:", error);
+        });
     }
-
-    let selectedCharacter = data.character_name;
-    localStorage.setItem("selectedCharacter", selectedCharacter);
-    console.log("✅ Personnage sélectionné :", selectedCharacter);
-
-    // Vérification avant d'appeler initGame()
-    if (!selectedCharacter) {
-      console.error("❌ Erreur : selectedCharacter est undefined !");
-      return;
-    }
-
-    initGame(selectedCharacter); // ✅ Appeler ici après le fetch
-  })
-  .catch(error => {
-    console.error("Erreur Fetch:", error);
-    initGame(selectedCharacter); // ⚠ Lance le jeu même si le fetch échoue
-  });
- 
-    initGame(selectedCharacter);
+    
+    console.log("🔍 Vérification avant initGame :", selectedCharacter);
+    
   
   gameMusic.play().catch(error => console.log("Lecture automatique bloquée :", error));
   
@@ -85,6 +84,7 @@ window.onload = function() {
 
 
 function initGame(selectedCharacter) {
+  
   
   const scene = new THREE.Scene();
   function showGameTips(scene) {
@@ -343,7 +343,7 @@ function showGameOver() {
     quitButton.style.transition = "0.3s";
     quitButton.onmouseover = () => quitButton.style.background = "darkgray";
     quitButton.onmouseout = () => quitButton.style.background = "gray";
-    quitButton.onclick = () => window.location.href = "launcher.html"; // Redirection au menu de sélection
+    quitButton.onclick = () => window.location.href = "selectionCharater.html"; // Redirection au menu de sélection
   
     buttonContainer.appendChild(restartButton);
     buttonContainer.appendChild(quitButton);
@@ -406,7 +406,7 @@ directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
 
-
+selectedCharacter = selectedCharacter.toLowerCase().replace(/\s+/g, "_");
 // Character Setup
 const loaderCharacter = new GLTFLoader();
 let character,
@@ -415,6 +415,7 @@ let character,
 const lanes = [-5, 0, 5];
 let characterLane = 1;
 loaderCharacter.load(characters[selectedCharacter], (gltf) => {
+  
   character = gltf.scene;
   character.scale.set(1.2, 1.2, 1.2);
   character.position.set(lanes[characterLane], 1, 5);
@@ -836,7 +837,7 @@ quitButton.innerText = "Quitter";
 quitButton.style.padding = "10px 20px";
 quitButton.style.fontSize = "18px";
 quitButton.addEventListener("click", () => {
-  window.location.href = "index.html"; // Recharge la page pour revenir au menu principal
+  window.location.href = "selectionCharater.html"; // Recharge la page pour revenir au menu principal
 });
 
 // Ajouter les boutons au menu
