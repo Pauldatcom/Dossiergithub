@@ -8,7 +8,7 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-include 'backend/connexion_bdd.php';
+include 'connexion_bdd.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $email = $data['email'] ?? '';

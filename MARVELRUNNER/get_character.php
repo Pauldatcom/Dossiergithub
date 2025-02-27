@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-include 'backend/connexion_bdd.php';
+include 'connexion_bdd.php';
 
 $user_id = $_GET['user_id'] ?? 0;
 if ($user_id == 0) {

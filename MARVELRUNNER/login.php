@@ -10,7 +10,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 session_start();
-require_once 'backend/connexion_bdd.php'; // ✅ Vérifie que ce fichier existe et contient la connexion
+require_once 'connexion_bdd.php'; // ✅ Vérifie que ce fichier existe et contient la connexion
 
 // ✅ Vérifie si la connexion est bien établie
 if (!$conn) {
