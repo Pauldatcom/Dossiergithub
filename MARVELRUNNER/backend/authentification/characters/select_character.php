@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
-include 'connexion_bdd.php';
+include 'backend/connexion_bdd.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $user_id = $data['user_id'] ?? null;

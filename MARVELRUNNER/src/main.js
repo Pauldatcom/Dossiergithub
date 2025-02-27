@@ -1,4 +1,4 @@
-import { setupUI } from "./ui.js";
+// import { setupUI } from "./ui.js";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
@@ -497,7 +497,7 @@ lanes [2] = laneWidth;
 
 let gameSpeed = 0.4;
 function increaseSpeed() {
-  if (score % 1500 === 0) gameSpeed += 0.1; 
+  if (score % 1000 === 0) gameSpeed += 0.3; 
 }
 
 // Obstacle Management (Flames, Portals, Rocks)
@@ -584,7 +584,6 @@ function handleObstacles() {
   });
 }
 
-// Jump Mechanics
 function handleJump() {
   if (isJumping && character?.position) {
     character.position.y += jumpVelocity;
@@ -596,7 +595,7 @@ function handleJump() {
   }
 }
 
-// Restart Game
+
 function restartGame() {
   if (isGameOver) {
     document.body.removeChild(gameOverElement);
@@ -604,25 +603,24 @@ function restartGame() {
     scoreElement.innerText = `Score: ${score}`;
     character.position.set(0, 1, 5);
     
-    // Supprimer les obstacles de la scène et vider le tableau
+
     obstacles.forEach((obstacle) => {
       scene.remove(obstacle);
     });
     obstacles.length = 0;
     
     isGameOver = false;
-    
-    // Redémarrer l'intervalle de création des obstacles
+
     obstacleInterval = setInterval(createObstacles, 2000);
     
     animate();
   }
 }
 
-// Listen for restart key
+
 window.addEventListener("keydown", restartGame);
 
-const { scoreElement, bestScoreElement, updateScoreDisplay, checkBestScore } = setupUI(gameMusic, animate, () => isPaused = true, () => isPaused = false);
+// const { scoreElement, bestScoreElement, updateScoreDisplay, checkBestScore } = setupUI(gameMusic, animate, () => isPaused = true, () => isPaused = false);
 
 
 
@@ -691,166 +689,156 @@ const { scoreElement, bestScoreElement, updateScoreDisplay, checkBestScore } = s
 
 // createButton("P", ActivatePower);
 
-// Ajout du titre
-// const gameTitle = document.createElement("div");
-// gameTitle.innerText = "ESCAPE FROM KANG";
-// gameTitle.style.position = "absolute";
-// gameTitle.style.top = "30%";
-// gameTitle.style.left = "20px";
-// gameTitle.style.transform = "translateY(-50%)";
-// gameTitle.style.fontSize = "40px";
-// gameTitle.style.color = "#00ffff";
-// gameTitle.style.fontFamily = "Marvel, sans-serif";
-// gameTitle.style.textTransform = "uppercase";
-// gameTitle.style.textShadow = "3px 3px 15px rgba(0, 255, 255, 0.9)";
-// document.body.appendChild(gameTitle);
 
-// let bestScore = localStorage.getItem("bestScore") || 0;
-// let score = 0;
+const gameTitle = document.createElement("div");
+gameTitle.innerText = "ESCAPE FROM KANG";
+gameTitle.style.position = "absolute";
+gameTitle.style.top = "30%";
+gameTitle.style.left = "20px";
+gameTitle.style.transform = "translateY(-50%)";
+gameTitle.style.fontSize = "40px";
+gameTitle.style.color = "#00ffff";
+gameTitle.style.fontFamily = "Marvel, sans-serif";
+gameTitle.style.textTransform = "uppercase";
+gameTitle.style.textShadow = "3px 3px 15px rgba(0, 255, 255, 0.9)";
+document.body.appendChild(gameTitle);
 
-// // Création de l'affichage du score
-// const scoreElement = document.createElement("div");
-// scoreElement.style.position = "absolute";
-// scoreElement.style.top = "20px";
-// scoreElement.style.left = "50%";
-// scoreElement.style.transform = "translateX(-50%)";
-// scoreElement.style.color = "#ffffff";
-// scoreElement.style.fontSize = "24px";
-// scoreElement.style.fontWeight = "bold";
-// scoreElement.style.fontFamily = "Marvel, sans-serif";
-// document.body.appendChild(scoreElement);
-
-// // Création de l'affichage du meilleur score
-// const bestScoreElement = document.createElement("div");
-// bestScoreElement.style.position = "absolute";
-// bestScoreElement.style.top = "50px";
-// bestScoreElement.style.left = "50%";
-// bestScoreElement.style.transform = "translateX(-50%)";
-// bestScoreElement.style.color = "gold";
-// bestScoreElement.style.fontSize = "22px";
-// bestScoreElement.style.fontWeight = "bold";
-// bestScoreElement.style.fontFamily = "Marvel, sans-serif";
-// document.body.appendChild(bestScoreElement);
-
-// // Mise à jour de l'affichage
-// function updateScoreDisplay() {
-//   scoreElement.innerText = `Score: ${score}`;
-//   bestScoreElement.innerText = `Meilleur Score: ${bestScore}`;
-// }
-
-// // Vérifie et met à jour le meilleur score
-// function checkBestScore() {
-//   if (score > bestScore) {
-//     bestScore = score;
-//     localStorage.setItem("bestScore", bestScore); // Sauvegarde le meilleur score
-//   }
-// }
-
-// const menuIcon = document.createElement("img");
-// menuIcon.src = "public/icons/settings.svg";  // Chemin vers ton icône
-// menuIcon.style.width = "40px";
-// menuIcon.style.height = "40px";
-// menuIcon.style.position = "absolute";
-// menuIcon.style.top = "20px";
-// menuIcon.style.right = "20px";
-// menuIcon.style.cursor = "pointer";
-// menuIcon.style.zIndex = "1000"; // Pour s'assurer qu'elle soit au-dessus
+let bestScore = localStorage.getItem("bestScore") || 0;
+let score = 0;
 
 
+const scoreElement = document.createElement("div");
+scoreElement.style.position = "absolute";
+scoreElement.style.top = "20px";
+scoreElement.style.left = "50%";
+scoreElement.style.transform = "translateX(-50%)";
+scoreElement.style.color = "#ffffff";
+scoreElement.style.fontSize = "24px";
+scoreElement.style.fontWeight = "bold";
+scoreElement.style.fontFamily = "Marvel, sans-serif";
+document.body.appendChild(scoreElement);
 
 
+const bestScoreElement = document.createElement("div");
+bestScoreElement.style.position = "absolute";
+bestScoreElement.style.top = "50px";
+bestScoreElement.style.left = "50%";
+bestScoreElement.style.transform = "translateX(-50%)";
+bestScoreElement.style.color = "gold";
+bestScoreElement.style.fontSize = "22px";
+bestScoreElement.style.fontWeight = "bold";
+bestScoreElement.style.fontFamily = "Marvel, sans-serif";
+document.body.appendChild(bestScoreElement);
 
 
-// document.body.appendChild(menuIcon);
+function updateScoreDisplay() {
+  scoreElement.innerText = `Score: ${score}`;
+  bestScoreElement.innerText = `Meilleur Score: ${bestScore}`;
+}
+
+
+function checkBestScore() {
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("bestScore", bestScore); 
+  }
+}
+
+const menuIcon = document.createElement("img");
+menuIcon.src = "public/icons/settings.svg";  
+menuIcon.style.width = "40px";
+menuIcon.style.height = "40px";
+menuIcon.style.position = "absolute";
+menuIcon.style.top = "20px";
+menuIcon.style.right = "20px";
+menuIcon.style.cursor = "pointer";
+menuIcon.style.zIndex = "1000"; 
+
+document.body.appendChild(menuIcon);
 
 
 
+const SettingsMenu = document.createElement("div");
+SettingsMenu.style.position = "absolute";
+SettingsMenu.style.top = "0";
+SettingsMenu.style.right = "0";
+SettingsMenu.style.width = "250px";
+SettingsMenu.style.height = "100%";
+SettingsMenu.style.display = "flex";
+SettingsMenu.style.flexDirection = "column";
+SettingsMenu.style.alignItems = "center";
+SettingsMenu.style.justifyContent = "center";
+SettingsMenu.style.gap = "20px";
+SettingsMenu.style.boxShadow = "5px 0 15px rgba(0,0,0,0.5)";
+SettingsMenu.style.display = "none"; 
+SettingsMenu.style.zIndex = "999";
+
+
+document.body.appendChild(SettingsMenu);
 
 
 
+const resumeButton = document.createElement("button")
 
-// const SettingsMenu = document.createElement("div");
-// SettingsMenu.style.position = "absolute";
-// SettingsMenu.style.top = "0";
-// SettingsMenu.style.right = "0";
-// SettingsMenu.style.width = "250px";
-// SettingsMenu.style.height = "100%";
-// SettingsMenu.style.display = "flex";
-// SettingsMenu.style.flexDirection = "column";
-// SettingsMenu.style.alignItems = "center";
-// SettingsMenu.style.justifyContent = "center";
-// SettingsMenu.style.gap = "20px";
-// SettingsMenu.style.boxShadow = "5px 0 15px rgba(0,0,0,0.5)";
-// SettingsMenu.style.display = "none"; // Caché au départ
-// SettingsMenu.style.zIndex = "999"; // Juste sous l'icône
+resumeButton.innerText = "Reprendre";
+resumeButton.style.padding = "10px 20px";
+resumeButton.style.fontSize = "18px";
 
 
+resumeButton.addEventListener("click", () => {
+  SettingsMenu.style.display = "none"; 
+  animate(); 
+});
 
-// document.body.appendChild(SettingsMenu);
+const startMusicButton = document.createElement("button");
+startMusicButton.innerText = "Activer la musique";
+startMusicButton.style.padding = "10px 20px";
+startMusicButton.style.fontSize = "18px";
+
+startMusicButton.addEventListener("click", () => {
+  gameMusic.play().then(() => {
+    console.log("Musique de jeu activée !");
+    startMusicButton.style.display = "none"; 
+  }).catch(error => console.error("Erreur de lecture automatique :", error));
+});
+
+SettingsMenu.appendChild(startMusicButton);
+
+const muteButton = document.createElement("button");
+muteButton.innerText = "Couper la musique";
+muteButton.style.padding = "10px 20px";
+muteButton.style.fontSize = "18px";
+muteButton.addEventListener("click", () => {
+  gameMusic.muted = !gameMusic.muted;
+  muteButton.innerText = gameMusic.muted ? "Activer la musique" : "Couper la musique";
+});
+SettingsMenu.appendChild(muteButton);
+
+const volumeSlider = document.createElement("input");
+volumeSlider.type = "range";
+volumeSlider.min = "0";
+volumeSlider.max = "1";
+volumeSlider.step = "0.01";
+volumeSlider.value = gameMusic.volume;
+
+volumeSlider.addEventListener("input", (e) => {
+  gameMusic.volume = e.target.value;
+});
+
+SettingsMenu.appendChild(volumeSlider);
+
+const quitButton = document.createElement("button");
+quitButton.innerText = "Quitter";
+quitButton.style.padding = "10px 20px";
+quitButton.style.fontSize = "18px";
+quitButton.addEventListener("click", () => {
+  window.location.href = "selectionCharater.html"; 
+});
 
 
-
-// const resumeButton = document.createElement("button")
-
-// resumeButton.innerText = "Reprendre";
-// resumeButton.style.padding = "10px 20px";
-// resumeButton.style.fontSize = "18px";
-
-
-// resumeButton.addEventListener("click", () => {
-//   SettingsMenu.style.display = "none"; // Cache le menu
-//   animate(); // Relance l'animation du jeu
-// });
-
-// const startMusicButton = document.createElement("button");
-// startMusicButton.innerText = "Activer la musique";
-// startMusicButton.style.padding = "10px 20px";
-// startMusicButton.style.fontSize = "18px";
-
-// startMusicButton.addEventListener("click", () => {
-//   gameMusic.play().then(() => {
-//     console.log("Musique de jeu activée !");
-//     startMusicButton.style.display = "none"; // Cache le bouton après activation
-//   }).catch(error => console.error("Erreur de lecture automatique :", error));
-// });
-
-// SettingsMenu.appendChild(startMusicButton);
-
-// const muteButton = document.createElement("button");
-// muteButton.innerText = "Couper la musique";
-// muteButton.style.padding = "10px 20px";
-// muteButton.style.fontSize = "18px";
-// muteButton.addEventListener("click", () => {
-//   gameMusic.muted = !gameMusic.muted;
-//   muteButton.innerText = gameMusic.muted ? "Activer la musique" : "Couper la musique";
-// });
-// SettingsMenu.appendChild(muteButton);
-
-// const volumeSlider = document.createElement("input");
-// volumeSlider.type = "range";
-// volumeSlider.min = "0";
-// volumeSlider.max = "1";
-// volumeSlider.step = "0.01";
-// volumeSlider.value = gameMusic.volume;
-
-// volumeSlider.addEventListener("input", (e) => {
-//   gameMusic.volume = e.target.value;
-// });
-
-// SettingsMenu.appendChild(volumeSlider);
-
-// const quitButton = document.createElement("button");
-// quitButton.innerText = "Quitter";
-// quitButton.style.padding = "10px 20px";
-// quitButton.style.fontSize = "18px";
-// quitButton.addEventListener("click", () => {
-//   window.location.href = "selectionCharater.html"; // Recharge la page pour revenir au menu principal
-// });
-
-// // Ajouter les boutons au menu
-// SettingsMenu.appendChild(resumeButton);
-// SettingsMenu.appendChild(muteButton);
-// SettingsMenu.appendChild(quitButton);
+SettingsMenu.appendChild(resumeButton);
+SettingsMenu.appendChild(muteButton);
+SettingsMenu.appendChild(quitButton);
 
 
 
@@ -862,14 +850,14 @@ const { scoreElement, bestScoreElement, updateScoreDisplay, checkBestScore } = s
 //   }
 // }
 
-// menuIcon.addEventListener("click", () => {
-//   SettingsMenu.style.display = SettingsMenu.style.display === "none" ? "flex" : "none";
-//   if (SettingsMenu.style.display === "flex") {
-//     cancelAnimationFrame(animationId); // Met le jeu en pause
-//   } else {
-//     animate(); // Relance l'animation si on ferme le menu
-//   }
-// });
+menuIcon.addEventListener("click", () => {
+  SettingsMenu.style.display = SettingsMenu.style.display === "none" ? "flex" : "none";
+  if (SettingsMenu.style.display === "flex") {
+    cancelAnimationFrame(animationId); 
+  } else {
+    animate(); 
+  }
+});
 
 function animateWalls() {
   wallShaderMaterial.uniforms.time.value += 0.05;
@@ -880,7 +868,7 @@ animateWalls();
 
 function animate() {
   if (isPaused) return;
-  // console.log("🎮 Animation en cours...");
+  
   animationId = requestAnimationFrame(animate);
   handleJump();
   handleObstacles();
